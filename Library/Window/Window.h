@@ -4,7 +4,7 @@
 class Window
 {
 public:
-                    Window      (int y, int x, bool boxEn = false, int height = 5, int width = 5);
+                    Window      (int y, int x, bool boxEn = false, int height = 0, int width = 0);
     virtual void    PosUpdate   ();
     virtual void    Update      ();
 

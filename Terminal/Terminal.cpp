@@ -22,7 +22,8 @@ int main()
 {
     initialize();
 
-    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
 
     std::vector<std::wstring> choices;
 
@@ -32,7 +33,7 @@ int main()
         choices.push_back(dev->name);
         for (auto sensor : dev->sensors)
         {
-            if (dev)
+            if (sensor)
             {
                 numOfOn++;
             }
@@ -96,6 +97,11 @@ int main()
                         infoWins[0]->SetData(devices[0]);
                     }
                     if (choice == 1)
+                    {
+                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(5, 60, true)));
+                        infoWins[1]->SetData(devices[1]);
+                    }
+                    if (choice == 2)
                         active = false;
                     if (choice != -1)
                         mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());

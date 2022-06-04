@@ -1,6 +1,6 @@
 ﻿#include "InfoWindow.h"
 
-InfoWindow::InfoWindow(int y, int x, bool boxEn, int height, int width) : Window(y, x, boxEn,height, width)
+InfoWindow::InfoWindow(int y, int x, bool boxEn, int height, int width) : Window(y, x, boxEn, height, width)
 {
     init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
     init_pair(FluidType::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
@@ -10,8 +10,11 @@ InfoWindow::InfoWindow(int y, int x, bool boxEn, int height, int width) : Window
 void InfoWindow::SetData(std::shared_ptr<StateData> data)
 {
     m_Data = data;
-    CalcSize();
-    wresize(m_window, m_height, m_width);
+    if (!m_width || !m_height)
+    {
+        CalcSize();
+        wresize(m_window, m_height, m_width);
+    }
     if (m_boxEn)
         box(m_window, 0, 0);
 }
