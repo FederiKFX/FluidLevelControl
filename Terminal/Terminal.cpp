@@ -1,5 +1,4 @@
-#include "global.h"
-#include "MenuWindow.h"
+#include "MenuWindow/MenuWindow.h"
 #include <nlohmann/json.hpp>
 
 
