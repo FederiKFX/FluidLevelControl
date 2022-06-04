@@ -22,7 +22,7 @@ int main()
 {
     initialize();
 
-    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,0,0,0 } }));
 
     std::vector<std::wstring> choices;
 

@@ -10,6 +10,10 @@ InfoWindow::InfoWindow(int y, int x, int height, int width, bool boxEn) : Window
 void InfoWindow::SetData(std::shared_ptr<StateData> data)
 {
     m_Data = data;
+    CalcSize();
+    wresize(m_window, m_height, m_width);
+    if (m_boxEn)
+        box(m_window, 0, 0);
 }
 
 void InfoWindow::Update()
@@ -22,9 +26,9 @@ void InfoWindow::TextUpdate()
 {
     int x = m_textX;
     int y = m_textY;
-    mvwaddwstr(m_window, y++, x, (L"Назва: " + m_Data->name).data());
-    mvwaddwstr(m_window, y++, x, (L"Тип рідини: " + m_Data->getFluidName()).data());
-    mvwaddwstr(m_window, y++, x, (L"Заповненість: " + std::to_wstring(m_Data->fullness) + L"%").data());
+    mvwaddwstr(m_window, y++, x, m_Data->getNameInfo().data());
+    mvwaddwstr(m_window, y++, x, m_Data->getFluidNameInfo().data());
+    mvwaddwstr(m_window, y++, x, m_Data->getFullnessNameInfo().data());
     mvwaddwstr(m_window, y++, x, L"Датчики: ");
     
     for (size_t i = m_Data->sensors.size() - 1; i != -1; i--)
@@ -35,4 +39,10 @@ void InfoWindow::TextUpdate()
         mvwaddwstr(m_window, y++, x + message.size(), L"000000000");
         m_Data->sensors[i] ? ColorOff(m_Data->fluidType) : ColorOff(FluidType::TANK);
     }
+}
+
+void InfoWindow::CalcSize()
+{
+    m_width = m_Data->getMaxWidth() + 2 * m_textX;
+    m_height = m_Data->getMaxHeight() + 2 * m_textY;
 }

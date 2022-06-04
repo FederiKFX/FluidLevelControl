@@ -1,5 +1,6 @@
 #pragma once
 #include "includes.h"
+#include <algorithm>
 
 enum FluidType
 {
@@ -15,6 +16,30 @@ typedef struct _StateData
     int fullness;
     std::vector<bool> sensors;
 
+    std::wstring getNameInfo()
+    {
+        return L"Назва: " + name;
+    }
+    std::wstring getFluidNameInfo()
+    {
+        return L"Тип рідини: " + getFluidName();
+    }
+    std::wstring getFullnessNameInfo()
+    {
+        return L"Заповненість: " + std::to_wstring(fullness) + L"%";
+    }
+    int getMaxWidth()
+    {
+        int ret = 0;
+        ret = getNameInfo().size() > getFluidNameInfo().size() ? getNameInfo().size() : getFluidNameInfo().size();
+        ret = ret > getFullnessNameInfo().size() ? ret : getFullnessNameInfo().size();
+        return ret;
+    }
+    int getMaxHeight()
+    {
+        int ret = 4 + sensors.size();
+        return ret;
+    }
     std::wstring getFluidName()
     {
         switch (fluidType)

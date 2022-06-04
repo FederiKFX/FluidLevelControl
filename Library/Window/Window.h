@@ -18,5 +18,6 @@ protected:
     int         m_y;
     int         m_width;
     int         m_height;
+    bool        m_boxEn;
 };
 

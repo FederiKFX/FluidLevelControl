@@ -12,6 +12,7 @@ public:
 
 private:
     void    TextUpdate  ();
+    void    CalcSize    ();
 
 private:
     int                         m_textX = 2;
