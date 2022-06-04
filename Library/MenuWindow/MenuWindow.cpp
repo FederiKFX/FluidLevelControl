@@ -1,11 +1,7 @@
 #include "MenuWindow.h"
 
-MenuWindow::MenuWindow(int height, int width, int y, int x, bool boxEn) : m_height(height), m_width(width), m_y(y), m_x(x)
-{
-    m_window = newwin(m_height, m_width * 2, m_y, m_x);
-    if(boxEn)
-        box(m_window, 0, 0);
-}
+MenuWindow::MenuWindow(int height, int width, int y, int x, bool boxEn) : Window(height, width, y, x, boxEn)
+{}
 
 void MenuWindow::SetCaption(std::wstring caption)
 {
@@ -41,11 +37,6 @@ int MenuWindow::ReportChoice(int mouse_y, int mouse_x)
     return ret;
 }
 
-void MenuWindow::PosUpdate()
-{
-    mvwin(m_window, m_y, m_x);
-}
-
 void MenuWindow::TextUpdate()
 {
     int x = m_textX;
@@ -75,5 +66,5 @@ void MenuWindow::TextUpdate()
 void MenuWindow::Update()
 {
     TextUpdate();
-    wrefresh(m_window);
+    Window::Update();
 }
