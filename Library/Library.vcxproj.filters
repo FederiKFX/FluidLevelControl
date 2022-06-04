@@ -4,18 +4,24 @@
     <Filter Include="MenuWindow">
       <UniqueIdentifier>{81b1d51f-faeb-4763-bcbd-c50dc5ce6ac4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{e966da0f-a052-4eb2-854f-c351b6b811ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuWindow\MenuWindow.h">
       <Filter>MenuWindow</Filter>
     </ClInclude>
-    <ClInclude Include="includes.h">
-      <Filter>MenuWindow</Filter>
+    <ClInclude Include="Window.h">
+      <Filter>Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MenuWindow\MenuWindow.cpp">
       <Filter>MenuWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Window</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

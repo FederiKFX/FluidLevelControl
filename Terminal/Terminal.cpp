@@ -1,4 +1,4 @@
-#include "MenuWindow/MenuWindow.h"
+п»ї#include "MenuWindow/MenuWindow.h"
 #include <nlohmann/json.hpp>
 
 
@@ -11,11 +11,11 @@ typedef struct _StateData
 } StateData;
 
 std::vector<std::wstring> choices = {
-    L"Пристрій 1",
+    L"РџСЂРёСЃС‚СЂС–Р№ 1рџ”ђвњ€пёЏрџ›ё",
     L"Choice 2",
     L"Choice 3",
     L"Choice 4",
-    L"Вихід"
+    L"Р’РёС…С–Рґ"
 };
 
 mmask_t old;
