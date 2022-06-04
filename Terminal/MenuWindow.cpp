@@ -7,12 +7,17 @@ MenuWindow::MenuWindow(int height, int width, int y, int x, bool boxEn) : m_heig
         box(m_window, 0, 0);
 }
 
-void MenuWindow::setChoices(const std::vector<std::wstring>& choices)
+void MenuWindow::SetCaption(std::wstring caption)
+{
+    m_caption = caption;
+}
+
+void MenuWindow::SetChoices(const std::vector<std::wstring>& choices)
 {
     m_choices = choices;
 }
 
-void MenuWindow::addChoice(std::wstring choice)
+void MenuWindow::AddChoice(std::wstring choice)
 {
     m_choices.push_back(choice);
 }
@@ -45,6 +50,10 @@ void MenuWindow::TextUpdate()
 {
     int x = m_textX;
     int y = m_textY;
+    if (!m_caption.empty())
+    {
+        mvwaddwstr(m_window, m_textY - 1, x, m_caption.data());
+    }
     for (size_t i = 0; i < m_choices.size(); ++i)
     {
         if (m_highlight == i)

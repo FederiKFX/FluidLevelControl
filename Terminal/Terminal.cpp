@@ -26,8 +26,8 @@ int main()
     initialize();
 
     MenuWindow statusWin(10, 10, 10, 5);
-    statusWin.setChoices(choices);
-    statusWin.addChoice(L"test");
+    statusWin.SetChoices(choices);
+    statusWin.SetCaption(L"test");
 
     refresh();
     statusWin.Update();
@@ -53,7 +53,7 @@ int main()
         {
             if (getmouse(&event) == OK)
             {
-                if (event.bstate & BUTTON1_DOUBLE_CLICKED) {
+                if (event.bstate & BUTTON1_CLICKED) {
                     choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
                     if (choice == 4)
                         active = false;
