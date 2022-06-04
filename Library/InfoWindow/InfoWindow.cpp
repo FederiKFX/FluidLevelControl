@@ -2,6 +2,8 @@
 
 InfoWindow::InfoWindow(int height, int width, int y, int x, bool boxEn) : Window(height, width, y, x, boxEn)
 {
+    init_pair(WATER_PAIR, COLOR_BLUE, COLOR_BLUE);
+    init_pair(TANK_PAIR, COLOR_WHITE, COLOR_WHITE);
 }
 
 void InfoWindow::SetData(StateData data)
@@ -27,8 +29,8 @@ void InfoWindow::TextUpdate()
     {
         std::wstring message = L"Датчик " + std::to_wstring(i) + L": ";
         mvwaddwstr(m_window, y, x, message.data());
-        m_Data.sensors[i] ? ColorOn(ON_PAIR) : ColorOn(OFF_PAIR);
+        m_Data.sensors[i] ? ColorOn(WATER_PAIR) : ColorOn(TANK_PAIR);
         mvwaddwstr(m_window, y++, x + message.size(), L"000000000");
-        m_Data.sensors[i] ? ColorOff(ON_PAIR) : ColorOff(OFF_PAIR);
+        m_Data.sensors[i] ? ColorOff(WATER_PAIR) : ColorOff(TANK_PAIR);
     }
 }

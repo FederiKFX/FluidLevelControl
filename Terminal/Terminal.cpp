@@ -24,8 +24,6 @@ void initialize()
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, &old);
     curs_set(0);
     start_color();
-    init_pair(ON_PAIR, COLOR_BLUE, COLOR_BLUE);
-    init_pair(OFF_PAIR, COLOR_WHITE, COLOR_WHITE);
 }
 
 int main()

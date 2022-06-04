@@ -1,8 +1,8 @@
 #pragma once
 #include "includes.h"
 
-#define ON_PAIR     10
-#define OFF_PAIR    11
+#define WATER_PAIR     10
+#define TANK_PAIR    11
 
 typedef struct _StateData
 {
