@@ -1,6 +1,6 @@
 ﻿#include "InfoWindow.h"
 
-InfoWindow::InfoWindow(int height, int width, int y, int x, bool boxEn) : Window(height, width, y, x, boxEn)
+InfoWindow::InfoWindow(int y, int x, int height, int width, bool boxEn) : Window(y, x, height, width, boxEn)
 {
     init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
     init_pair(FluidType::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);

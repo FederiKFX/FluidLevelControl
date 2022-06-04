@@ -1,6 +1,6 @@
 #include "MenuWindow.h"
 
-MenuWindow::MenuWindow(int height, int width, int y, int x, bool boxEn) : Window(height, width, y, x, boxEn)
+MenuWindow::MenuWindow(int y, int x, int height, int width, bool boxEn) : Window(y, x, height, width, boxEn)
 {}
 
 void MenuWindow::SetCaption(std::wstring caption)

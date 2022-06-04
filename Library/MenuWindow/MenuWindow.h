@@ -5,7 +5,7 @@
 class MenuWindow : public Window
 {
 public:
-            MenuWindow      (int height, int width, int y, int x, bool boxEn = false);
+            MenuWindow      (int y, int x, int height = 5, int width = 5, bool boxEn = false);
     void    SetCaption      (std::wstring caption);
     void    SetChoices      (const std::vector<std::wstring>& choices);
     void    AddChoice       (std::wstring choice);
