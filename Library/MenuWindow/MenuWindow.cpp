@@ -1,6 +1,6 @@
 #include "MenuWindow.h"
 
-MenuWindow::MenuWindow(int y, int x, int height, int width, bool boxEn) : Window(y, x, height, width, boxEn)
+MenuWindow::MenuWindow(int y, int x, bool boxEn, int height, int width) : Window(y, x, boxEn, height, width)
 {
     if (m_boxEn)
         box(m_window, 0, 0);

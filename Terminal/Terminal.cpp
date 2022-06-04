@@ -47,7 +47,7 @@ int main()
 
 
 
-    MenuWindow statusWin(10, 5, 10, 10, true);
+    MenuWindow statusWin(10, 5, true, 10, 10);
     statusWin.SetChoices(choices);
     statusWin.SetCaption(L"test");
 
@@ -92,7 +92,7 @@ int main()
                     choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
                     if (choice == 0)
                     {
-                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(5, 30, 20, 20, true)));
+                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(5, 30, true)));
                         infoWins[0]->SetData(devices[0]);
                     }
                     if (choice == 1)

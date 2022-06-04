@@ -6,7 +6,7 @@
 class InfoWindow : public Window
 {
 public:
-            InfoWindow  (int y, int x, int height = 5, int width = 5, bool boxEn = false);
+            InfoWindow  (int y, int x, bool boxEn = false, int height = 5, int width = 5);
     void    SetData     (std::shared_ptr<StateData> data);
     void    Update      ();
 
