@@ -27,11 +27,10 @@ int main()
 
     MenuWindow statusWin(10, 10, 10, 5, true);
     statusWin.setChoices(choices);
-    
-    refresh();
-    
-    statusWin.Update();
+    statusWin.addChoice("test");
 
+    refresh();
+    statusWin.Update();
 
 
     int choice = 0;
@@ -43,11 +42,10 @@ int main()
         ch = getch();
         switch (ch)
         {
-
         case KEY_RESIZE:
         {
             resize_term(0, 0);
-            //mvwin(statusWin, 10, 5);
+            statusWin.PosUpdate();
             statusWin.Update();
             break;
         }
@@ -56,7 +54,7 @@ int main()
             if (getmouse(&event) == OK)
             {
                 if (event.bstate & BUTTON1_CLICKED) {
-                    choice = statusWin.ReportChoice(event.x + 1, event.y + 1);
+                    choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
                     if (choice == 4)
                         active = false;
                     if (choice != -1)
@@ -69,8 +67,6 @@ int main()
         }
         }
     }
-end:;
     endwin();
-    system("pause");
     return 0;
 }

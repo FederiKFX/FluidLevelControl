@@ -36,7 +36,12 @@ int MenuWindow::ReportChoice(int mouse_y, int mouse_x)
     return ret;
 }
 
-void MenuWindow::Print()
+void MenuWindow::PosUpdate()
+{
+    mvwin(m_window, m_y, m_x);
+}
+
+void MenuWindow::TextUpdate()
 {
     int x = m_textX;
     int y = m_textY;
@@ -56,6 +61,6 @@ void MenuWindow::Print()
 
 void MenuWindow::Update()
 {
-    Print();
+    TextUpdate();
     wrefresh(m_window);
 }
