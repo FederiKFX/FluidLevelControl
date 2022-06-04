@@ -15,6 +15,8 @@
     <ClInclude Include="Window.h">
       <Filter>Window</Filter>
     </ClInclude>
+    <ClInclude Include="includes.h" />
+    <ClInclude Include="InfoWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MenuWindow\MenuWindow.cpp">
@@ -23,5 +25,6 @@
     <ClCompile Include="Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+    <ClCompile Include="InfoWindow.cpp" />
   </ItemGroup>
 </Project>
