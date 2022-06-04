@@ -7,12 +7,12 @@ MenuWindow::MenuWindow(int height, int width, int y, int x, bool boxEn) : m_heig
         box(m_window, 0, 0);
 }
 
-void MenuWindow::setChoices(const std::vector<std::string>& choices)
+void MenuWindow::setChoices(const std::vector<std::wstring>& choices)
 {
     m_choices = choices;
 }
 
-void MenuWindow::addChoice(std::string choice)
+void MenuWindow::addChoice(std::wstring choice)
 {
     m_choices.push_back(choice);
 }
@@ -50,11 +50,15 @@ void MenuWindow::TextUpdate()
         if (m_highlight == i)
         {
             wattron(m_window, A_REVERSE);
-            mvwprintw(m_window, y, x, "%s", m_choices[i].data());
+            //mvwprintw(m_window, y, x, "%s", m_choices[i].data());
+            mvwaddwstr(m_window, y, x, m_choices[i].data());
             wattroff(m_window, A_REVERSE);
         }
         else
-            mvwprintw(m_window, y, x, "%s", m_choices[i].data());
+        {
+            //mvwprintw(m_window, y, x, "%s", m_choices[i].data());
+            mvwaddwstr(m_window, y, x, m_choices[i].data());
+        }
         ++y;
     }
 }

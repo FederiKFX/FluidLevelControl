@@ -1,12 +1,12 @@
 #include "global.h"
 #include "MenuWindow.h"
 
-std::vector<std::string> choices = {
-    "Choice 1",
-    "Choice 2",
-    "Choice 3",
-    "Choice 4",
-    "Exit"
+std::vector<std::wstring> choices = {
+    L"Пристрій 1",
+    L"Choice 2",
+    L"Choice 3",
+    L"Choice 4",
+    L"Вихід"
 };
 
 mmask_t old;
@@ -25,9 +25,9 @@ int main()
 {
     initialize();
 
-    MenuWindow statusWin(10, 10, 10, 5, true);
+    MenuWindow statusWin(10, 10, 10, 5);
     statusWin.setChoices(choices);
-    statusWin.addChoice("test");
+    statusWin.addChoice(L"test");
 
     refresh();
     statusWin.Update();
@@ -53,7 +53,7 @@ int main()
         {
             if (getmouse(&event) == OK)
             {
-                if (event.bstate & BUTTON1_CLICKED) {
+                if (event.bstate & BUTTON1_DOUBLE_CLICKED) {
                     choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
                     if (choice == 4)
                         active = false;
