@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{11c6f976-0a06-4cbf-a651-722aa6027bb2}</ProjectGuid>
-    <RootNamespace>FLC</RootNamespace>
+    <ProjectGuid>{1596aa38-0c65-4038-9d06-28f5c80459ec}</ProjectGuid>
+    <RootNamespace>Terminal</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FLC.cpp" />
+    <ClCompile Include="Terminal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
