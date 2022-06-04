@@ -1,5 +1,15 @@
 #include "global.h"
 #include "MenuWindow.h"
+#include <nlohmann/json.hpp>
+
+
+typedef struct _StateData
+{
+    std::string name;
+    std::vector<bool> sensors;
+    int fullness;
+
+} StateData;
 
 std::vector<std::wstring> choices = {
     L"Пристрій 1",
