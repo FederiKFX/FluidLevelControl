@@ -7,24 +7,32 @@
     <Filter Include="Window">
       <UniqueIdentifier>{e966da0f-a052-4eb2-854f-c351b6b811ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="InfoWindow">
+      <UniqueIdentifier>{d94827e9-6e5f-42b9-8e0e-d95231cca634}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuWindow\MenuWindow.h">
       <Filter>MenuWindow</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="includes.h" />
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="includes.h" />
-    <ClInclude Include="InfoWindow.h" />
+    <ClInclude Include="InfoWindow\InfoWindow.h">
+      <Filter>InfoWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MenuWindow\MenuWindow.cpp">
       <Filter>MenuWindow</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
+    <ClCompile Include="Window\Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="InfoWindow.cpp" />
+    <ClCompile Include="InfoWindow\InfoWindow.cpp">
+      <Filter>InfoWindow</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

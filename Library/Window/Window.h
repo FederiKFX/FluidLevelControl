@@ -9,6 +9,10 @@ public:
     virtual void    Update      ();
 
 protected:
+    void            ColorOn     (int color);
+    void            ColorOff    (int color);
+
+protected:
     WINDOW*     m_window;
     int         m_x;
     int         m_y;

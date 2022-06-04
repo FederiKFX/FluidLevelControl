@@ -1,14 +1,7 @@
 ﻿#include "MenuWindow/MenuWindow.h"
+#include "InfoWindow/InfoWindow.h"
 #include <nlohmann/json.hpp>
 
-
-typedef struct _StateData
-{
-    std::string name;
-    std::vector<bool> sensors;
-    int fullness;
-
-} StateData;
 
 std::vector<std::wstring> choices = {
     L"Пристрій 1🔐✈️🛸",
@@ -17,6 +10,8 @@ std::vector<std::wstring> choices = {
     L"Choice 4",
     L"Вихід"
 };
+
+StateData data = { L"Вода", 0, {1,1,1,1,0,1,1,0,0,0} };
 
 mmask_t old;
 void initialize()
@@ -28,6 +23,9 @@ void initialize()
     keypad(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, &old);
     curs_set(0);
+    start_color();
+    init_pair(ON_PAIR, COLOR_BLUE, COLOR_BLUE);
+    init_pair(OFF_PAIR, COLOR_WHITE, COLOR_WHITE);
 }
 
 int main()
@@ -38,8 +36,25 @@ int main()
     statusWin.SetChoices(choices);
     statusWin.SetCaption(L"test");
 
+    InfoWindow infoWin(20, 20, 5, 30, true);
+    int numOfOn = 0;
+    for (auto d : data.sensors)
+    {
+        if (d)
+        {
+            numOfOn++;
+        }
+        else
+        {
+            break;
+        }
+    }
+    data.fullness = (float)numOfOn / data.sensors.size() * 100;
+    infoWin.SetData(data);
+
     refresh();
     statusWin.Update();
+    infoWin.Update();
 
 
     int choice = 0;
@@ -56,6 +71,8 @@ int main()
             resize_term(0, 0);
             statusWin.PosUpdate();
             statusWin.Update();
+            infoWin.PosUpdate();
+            infoWin.Update();
             break;
         }
         case KEY_MOUSE:

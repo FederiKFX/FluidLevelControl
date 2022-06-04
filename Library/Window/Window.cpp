@@ -16,3 +16,13 @@ void Window::Update()
 {
     wrefresh(m_window);
 }
+
+void Window::ColorOn(int color)
+{
+    wattron(m_window, COLOR_PAIR(color));
+}
+
+void Window::ColorOff(int color)
+{
+    wattroff(m_window, COLOR_PAIR(color));
+}
