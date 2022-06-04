@@ -29,14 +29,15 @@ void InfoWindow::TextUpdate()
     mvwaddwstr(m_window, y++, x, m_Data->getNameInfo().data());
     mvwaddwstr(m_window, y++, x, m_Data->getFluidNameInfo().data());
     mvwaddwstr(m_window, y++, x, m_Data->getFullnessNameInfo().data());
-    mvwaddwstr(m_window, y++, x, L"Датчики: ");
+    mvwaddwstr(m_window, y++, x, m_Data->getSensorsCaptionInfo().data());
     
     for (size_t i = m_Data->sensors.size() - 1; i != -1; i--)
     {
-        std::wstring message = L"Датчик " + std::to_wstring(i) + L": ";
+        std::wstring message = m_Data->getSensorNameInfo(i);
+        std::wstring tank(50, L'0');
         mvwaddwstr(m_window, y, x, message.data());
         m_Data->sensors[i] ? ColorOn(m_Data->fluidType) : ColorOn(FluidType::TANK);
-        mvwaddwstr(m_window, y++, x + message.size(), L"000000000");
+        mvwaddwstr(m_window, y++, x + message.size(), std::wstring(tank.begin(), tank.begin() + (m_width - message.size() - 2 * m_textX)).data());
         m_Data->sensors[i] ? ColorOff(m_Data->fluidType) : ColorOff(FluidType::TANK);
     }
 }

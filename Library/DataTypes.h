@@ -28,6 +28,14 @@ typedef struct _StateData
     {
         return L"Заповненість: " + std::to_wstring(fullness) + L"%";
     }
+    std::wstring getSensorsCaptionInfo()
+    {
+        return L"Датчики:";
+    }
+    std::wstring getSensorNameInfo(int i)
+    {
+        return L"Датчик " + std::to_wstring(i) + L": ";
+    }
     int getMaxWidth()
     {
         int ret = 0;

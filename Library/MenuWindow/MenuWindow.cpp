@@ -1,7 +1,10 @@
 #include "MenuWindow.h"
 
 MenuWindow::MenuWindow(int y, int x, int height, int width, bool boxEn) : Window(y, x, height, width, boxEn)
-{}
+{
+    if (m_boxEn)
+        box(m_window, 0, 0);
+}
 
 void MenuWindow::SetCaption(std::wstring caption)
 {
