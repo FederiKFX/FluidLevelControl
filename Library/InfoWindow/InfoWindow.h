@@ -7,15 +7,15 @@ class InfoWindow : public Window
 {
 public:
             InfoWindow  (int height, int width, int y, int x, bool boxEn = false);
-    void    SetData     (StateData data);
+    void    SetData     (std::shared_ptr<StateData> data);
     void    Update      ();
 
 private:
     void    TextUpdate  ();
 
 private:
-    int         m_textX = 2;
-    int         m_textY = 1;
-    StateData   m_Data;
+    int                         m_textX = 2;
+    int                         m_textY = 1;
+    std::shared_ptr<StateData>  m_Data;
 };
 

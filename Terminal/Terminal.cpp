@@ -2,16 +2,8 @@
 #include "InfoWindow/InfoWindow.h"
 #include <nlohmann/json.hpp>
 
-
-std::vector<std::wstring> choices = {
-    L"Пристрій 1🔐✈️🛸",
-    L"Choice 2",
-    L"Choice 3",
-    L"Choice 4",
-    L"Вихід"
-};
-
-StateData data = { L"Вода", 0, {1,1,1,1,0,1,1,0,0,0} };
+std::vector<std::shared_ptr<StateData>> devices;
+std::vector<std::shared_ptr<InfoWindow>> infoWins;
 
 mmask_t old;
 void initialize()
@@ -30,29 +22,43 @@ int main()
 {
     initialize();
 
+    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,1,1,0,0,0 } }));
+
+    std::vector<std::wstring> choices;
+
+    for (auto dev : devices)
+    {
+        int numOfOn = 0;
+        choices.push_back(dev->name);
+        for (auto sensor : dev->sensors)
+        {
+            if (dev)
+            {
+                numOfOn++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        dev->fullness = (float)numOfOn / dev->sensors.size() * 100;
+    }
+    choices.push_back(L"Вихід");
+
+
+
     MenuWindow statusWin(10, 10, 10, 5);
     statusWin.SetChoices(choices);
     statusWin.SetCaption(L"test");
 
-    InfoWindow infoWin(20, 20, 5, 30, true);
-    int numOfOn = 0;
-    for (auto d : data.sensors)
-    {
-        if (d)
-        {
-            numOfOn++;
-        }
-        else
-        {
-            break;
-        }
-    }
-    data.fullness = (float)numOfOn / data.sensors.size() * 100;
-    infoWin.SetData(data);
+    //InfoWindow infoWin(20, 20, 5, 30, true);
+    
+    
+    //infoWin.SetData(data);
 
     refresh();
     statusWin.Update();
-    infoWin.Update();
+    //infoWin.Update();
 
 
     int choice = 0;
@@ -69,8 +75,13 @@ int main()
             resize_term(0, 0);
             statusWin.PosUpdate();
             statusWin.Update();
-            infoWin.PosUpdate();
-            infoWin.Update();
+            for (auto win : infoWins)
+            {
+                win->PosUpdate();
+                win->Update();
+            }
+            //infoWin.PosUpdate();
+            //infoWin.Update();
             break;
         }
         case KEY_MOUSE:
@@ -79,12 +90,22 @@ int main()
             {
                 if (event.bstate & BUTTON1_CLICKED) {
                     choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
-                    if (choice == 4)
+                    if (choice == 0)
+                    {
+                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(20, 20, 5, 30, true)));
+                        infoWins[0]->SetData(devices[0]);
+                    }
+                    if (choice == 1)
                         active = false;
                     if (choice != -1)
                         mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                     refresh();
                 }
+            }
+            refresh();
+            for (auto win : infoWins)
+            {
+                win->Update();
             }
             statusWin.Update();
             break;
