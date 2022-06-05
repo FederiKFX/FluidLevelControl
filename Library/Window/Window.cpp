@@ -10,9 +10,41 @@ void Window::PosUpdate()
     mvwin(m_window, m_y, m_x);
 }
 
+void Window::SizeUpdate()
+{
+    wresize(m_window, m_height, m_width);
+}
+
 void Window::Update()
 {
     wrefresh(m_window);
+}
+
+int Window::GetHeight()
+{
+    return m_height;
+}
+
+int Window::GetWidth()
+{
+    return m_width;
+}
+
+void Window::SetPos(int y, int x)
+{
+    m_y = y;
+    m_x = x;
+}
+
+void Window::SetSize(int height, int width)
+{
+    m_height = height;
+    m_width = width;
+}
+
+bool Window::IsClicked(int mouse_x, int mouse_y)
+{
+    return (mouse_y > m_y) && (mouse_y < m_y + m_height) && (mouse_x > m_x) && (mouse_x < m_x + m_width);
 }
 
 void Window::ColorOn(int color)

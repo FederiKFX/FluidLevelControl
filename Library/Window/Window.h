@@ -6,7 +6,13 @@ class Window
 public:
                     Window      (int y, int x, bool boxEn = false, int height = 0, int width = 0);
     virtual void    PosUpdate   ();
+    virtual void    SizeUpdate  ();
     virtual void    Update      ();
+    int             GetHeight   ();
+    int             GetWidth    ();
+    void            SetPos      (int y, int x);
+    void            SetSize     (int height, int width);
+    bool            IsClicked   (int mouse_y, int mouse_x);
 
 protected:
     void            ColorOn     (int color);
