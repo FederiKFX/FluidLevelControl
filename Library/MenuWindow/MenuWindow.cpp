@@ -21,7 +21,7 @@ void MenuWindow::AddChoice(std::wstring choice)
     m_choices.push_back(choice);
 }
 
-int MenuWindow::ReportChoice(int mouse_y, int mouse_x)
+int MenuWindow::ClickAction(int mouse_y, int mouse_x)
 {
     int i, j, choice;
     int ret = -1;
@@ -60,13 +60,11 @@ void MenuWindow::TextUpdate()
         if (m_highlight == i)
         {
             wattron(m_window, A_REVERSE);
-            //mvwprintw(m_window, y, x, "%s", m_choices[i].data());
             mvwaddwstr(m_window, y, x, m_choices[i].data());
             wattroff(m_window, A_REVERSE);
         }
         else
         {
-            //mvwprintw(m_window, y, x, "%s", m_choices[i].data());
             mvwaddwstr(m_window, y, x, m_choices[i].data());
         }
         ++y;

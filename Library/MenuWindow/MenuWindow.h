@@ -9,7 +9,7 @@ public:
     void    SetCaption      (std::wstring caption);
     void    SetChoices      (const std::vector<std::wstring>& choices);
     void    AddChoice       (std::wstring choice);
-    int     ReportChoice    (int mouse_y, int mouse_x);
+    int     ClickAction     (int mouse_y, int mouse_x);
     void    Update          ();
 
 private:

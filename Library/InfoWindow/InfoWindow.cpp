@@ -30,6 +30,22 @@ void InfoWindow::Update()
     Window::Update();
 }
 
+int InfoWindow::ClickAction(int mouse_y, int mouse_x)
+{
+    if (IsClicked(mouse_y, mouse_x))
+    {
+        for (size_t i = 0; i < m_sensorsPos.size(); ++i)
+        {
+            if (m_sensorsPos[i].first + 1 == mouse_y)
+            {
+                m_Data->sensors[m_Data->sensors.size() - 1 - i] = !m_Data->sensors[m_Data->sensors.size() - 1 - i];
+                break;
+            }
+        }
+    }
+    return 0;
+}
+
 void InfoWindow::ColourInit()
 {
     init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
@@ -52,6 +68,7 @@ void InfoWindow::TextUpdate()
         std::wstring tank(50, L'0');
         mvwaddwstr(m_window, y, x, message.data());
         m_Data->sensors[i] ? ColorOn(m_Data->fluidType) : ColorOn(FluidType::TANK);
+        m_sensorsPos.push_back(std::pair <int, int>(y, x + message.size()));
         mvwaddwstr(m_window, y++, x + message.size(), std::wstring(tank.begin(), tank.begin() + (m_width - message.size() - 2 * m_textX)).data());
         m_Data->sensors[i] ? ColorOff(m_Data->fluidType) : ColorOff(FluidType::TANK);
     }

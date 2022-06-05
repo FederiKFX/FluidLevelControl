@@ -38,6 +38,14 @@ void WindowsGrid::SizeUpdate()
     }
 }
 
+void WindowsGrid::ClickAction(int mouse_y, int mouse_x)
+{
+    for (size_t i = 0; i < m_Windows.size(); ++i)
+    {
+        m_Windows[i]->ClickAction(mouse_y, mouse_x);
+    }
+}
+
 void WindowsGrid::CalcPos()
 {
     getmaxyx(stdscr, m_heightSTD, m_widthSTD);

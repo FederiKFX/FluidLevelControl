@@ -8,6 +8,7 @@ public:
     virtual void    PosUpdate   ();
     virtual void    SizeUpdate  ();
     virtual void    Update      ();
+    virtual int     ClickAction(int mouse_y, int mouse_x) = 0;
     int             GetHeight   ();
     int             GetWidth    ();
     void            SetPos      (int y, int x);

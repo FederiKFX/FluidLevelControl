@@ -42,7 +42,7 @@ void Window::SetSize(int height, int width)
     m_width = width;
 }
 
-bool Window::IsClicked(int mouse_x, int mouse_y)
+bool Window::IsClicked(int mouse_y, int mouse_x)
 {
     return (mouse_y > m_y) && (mouse_y < m_y + m_height) && (mouse_x > m_x) && (mouse_x < m_x + m_width);
 }

@@ -11,6 +11,7 @@ public:
     void    Update      ();
     void    PosUpdate   ();
     void    SizeUpdate  ();
+    void    ClickAction (int mouse_y, int mouse_x);
 
 private:
     void    CalcPos ();

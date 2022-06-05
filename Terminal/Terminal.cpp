@@ -24,6 +24,7 @@ int main()
 
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 3", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
 
     std::vector<std::wstring> choices;
     for (auto dev : devices)
@@ -81,8 +82,8 @@ int main()
             if (getmouse(&event) == OK)
             {
                 if (event.bstate & BUTTON1_CLICKED) {
-                    choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
-
+                    choice = statusWin.ClickAction(event.y + 1, event.x + 1);
+                    infoWins.ClickAction(event.y + 1, event.x + 1);
                     if (choice != -1)
                     {
                         if (choice == choices.size() - 1)
