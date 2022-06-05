@@ -36,7 +36,7 @@ int InfoWindow::ClickAction(int mouse_y, int mouse_x)
     {
         for (size_t i = 0; i < m_sensorsPos.size(); ++i)
         {
-            if (m_sensorsPos[i].first + 1 == mouse_y)
+            if (m_sensorsPos[i].first + m_y == mouse_y)
             {
                 m_Data->sensors[m_Data->sensors.size() - 1 - i] = !m_Data->sensors[m_Data->sensors.size() - 1 - i];
                 break;
@@ -68,7 +68,7 @@ void InfoWindow::TextUpdate()
         std::wstring tank(50, L'0');
         mvwaddwstr(m_window, y, x, message.data());
         m_Data->sensors[i] ? ColorOn(m_Data->fluidType) : ColorOn(FluidType::TANK);
-        m_sensorsPos.push_back(std::pair <int, int>(y, x + message.size()));
+        m_sensorsPos.push_back(std::pair <int, int>(y + m_textY, x + message.size() + m_textX));
         mvwaddwstr(m_window, y++, x + message.size(), std::wstring(tank.begin(), tank.begin() + (m_width - message.size() - 2 * m_textX)).data());
         m_Data->sensors[i] ? ColorOff(m_Data->fluidType) : ColorOff(FluidType::TANK);
     }
