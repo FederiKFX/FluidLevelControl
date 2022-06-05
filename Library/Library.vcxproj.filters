@@ -10,6 +10,9 @@
     <Filter Include="InfoWindow">
       <UniqueIdentifier>{d94827e9-6e5f-42b9-8e0e-d95231cca634}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WindowsGrid">
+      <UniqueIdentifier>{91f11aee-9cd7-4508-8ed8-5538847332d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuWindow\MenuWindow.h">
@@ -23,7 +26,9 @@
     <ClInclude Include="InfoWindow\InfoWindow.h">
       <Filter>InfoWindow</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsGrid.h" />
+    <ClInclude Include="WindowsGrid\WindowsGrid.h">
+      <Filter>WindowsGrid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MenuWindow\MenuWindow.cpp">
@@ -35,6 +40,8 @@
     <ClCompile Include="InfoWindow\InfoWindow.cpp">
       <Filter>InfoWindow</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsGrid.cpp" />
+    <ClCompile Include="WindowsGrid\WindowsGrid.cpp">
+      <Filter>WindowsGrid</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
