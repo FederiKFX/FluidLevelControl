@@ -62,7 +62,6 @@ int main()
     int ch;
     bool active = true;
     MEVENT event;
-    InfoWindow* k = nullptr;
     while (active)
     {
         ch = getch();
@@ -88,15 +87,9 @@ int main()
                     {
                         active = false;
                     }
-                    if (choice == 1)
-                    {
-                        k->SetPos(5, 30);
-                        k->PosUpdate();
-                    }
                     else
                     {
-                        //infoWins.Add(new InfoWindow(devices[choice], true));
-                        k = new InfoWindow(devices[choice], true);
+                        infoWins.Add(new InfoWindow(devices[choice], true));
                     }
                     if (choice != -1)
                         mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
@@ -104,7 +97,7 @@ int main()
                 }
             }
             refresh();
-            k->Update();
+            infoWins.PosUpdate();
             infoWins.Update();
             statusWin.Update();
             break;

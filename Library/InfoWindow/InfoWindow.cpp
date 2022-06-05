@@ -2,13 +2,12 @@
 
 InfoWindow::InfoWindow(int y, int x, bool boxEn, int height, int width) : Window(y, x, boxEn, height, width)
 {
-    init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
-    init_pair(FluidType::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
-    init_pair(FluidType::TANK, COLOR_WHITE, COLOR_WHITE);
+    ColourInit();
 }
 
 InfoWindow::InfoWindow(std::shared_ptr<StateData> data, bool boxEn) : Window(0, 0, boxEn, 0, 0)
 {
+    ColourInit();
     SetData(data);
 }
 
@@ -31,12 +30,12 @@ void InfoWindow::Update()
     Window::Update();
 }
 
-/*void InfoWindow::Resize(int height, int width)
+void InfoWindow::ColourInit()
 {
-    m_height = height;
-    m_width = width;
-    wresize(m_window, m_height, m_width);
-}*/
+    init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
+    init_pair(FluidType::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(FluidType::TANK, COLOR_WHITE, COLOR_WHITE);
+}
 
 void InfoWindow::TextUpdate()
 {

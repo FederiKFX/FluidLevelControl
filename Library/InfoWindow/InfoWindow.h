@@ -10,9 +10,9 @@ public:
             InfoWindow  (std::shared_ptr<StateData> data, bool boxEn);
     void    SetData     (std::shared_ptr<StateData> data);
     void    Update      ();
-    //void    Resize      (int height, int width);
 
 private:
+    void    ColourInit  ();
     void    TextUpdate  ();
     void    CalcSize    ();
 
