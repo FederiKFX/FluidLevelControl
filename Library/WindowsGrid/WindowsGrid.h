@@ -13,7 +13,7 @@ public:
     void    SizeUpdate  ();
 
 private:
-    void    CalcPosSize ();
+    void    CalcPos ();
 private:
     std::vector<std::unique_ptr<Window>> m_Windows;
     int m_y, m_x;

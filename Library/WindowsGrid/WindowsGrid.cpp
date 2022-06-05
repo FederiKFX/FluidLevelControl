@@ -10,7 +10,7 @@ void WindowsGrid::Add(Window* win)
     m_Windows.emplace_back(win);
     m_width < m_Windows.back()->GetWidth() ? m_width = m_Windows.back()->GetWidth() : NULL;
     m_height < m_Windows.back()->GetHeight() ? m_height = m_Windows.back()->GetHeight() : NULL;
-    CalcPosSize();
+    CalcPos();
 }
 
 void WindowsGrid::Update()
@@ -23,9 +23,10 @@ void WindowsGrid::Update()
 
 void WindowsGrid::PosUpdate()
 {
+    CalcPos();
     for (size_t i = 0; i < m_Windows.size(); ++i)
     {
-        m_Windows[i]->PosUpdate();
+        m_Windows[i]->Window::PosUpdate();
     }
 }
 
@@ -37,20 +38,21 @@ void WindowsGrid::SizeUpdate()
     }
 }
 
-void WindowsGrid::CalcPosSize()
+void WindowsGrid::CalcPos()
 {
-    int col = (float)m_widthSTD / m_width;
-    int row = (float)m_heightSTD / m_height;
+    getmaxyx(stdscr, m_heightSTD, m_widthSTD);
+    int col = (float)(m_widthSTD - m_x) / m_width;
+    int row = (float)(m_heightSTD - m_y) / m_height;
     m_yLast = m_y;
     m_xLast = m_x;
     for (size_t i = 0; i < m_Windows.size(); ++i)
     {
-        m_Windows[i]->SetPos(m_yLast, m_xLast);
-        m_xLast += m_width;
-        if ((i > col) && (i % col == 0))
+        if ((i % col == 0) && (i >= col))
         {
             m_yLast += m_height;
             m_xLast = m_x;
         }
+        m_Windows[i]->SetPos(m_yLast, m_xLast);
+        m_xLast += m_width;
     }
 }
