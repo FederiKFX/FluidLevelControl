@@ -12,6 +12,7 @@ public:
     int             GetWidth    ();
     void            SetPos      (int y, int x);
     void            SetSize     (int height, int width);
+    bool            IsClicked   (int mouse_y, int mouse_x);
 
 protected:
     void            ColorOn     (int color);

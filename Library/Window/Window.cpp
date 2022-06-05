@@ -42,6 +42,11 @@ void Window::SetSize(int height, int width)
     m_width = width;
 }
 
+bool Window::IsClicked(int mouse_x, int mouse_y)
+{
+    return (mouse_y > m_y) && (mouse_y < m_y + m_height) && (mouse_x > m_x) && (mouse_x < m_x + m_width);
+}
+
 void Window::ColorOn(int color)
 {
     wattron(m_window, COLOR_PAIR(color));

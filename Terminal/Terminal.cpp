@@ -83,16 +83,18 @@ int main()
                 if (event.bstate & BUTTON1_CLICKED) {
                     choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
 
-                    if (choice == choices.size() - 1)
-                    {
-                        active = false;
-                    }
-                    else
-                    {
-                        infoWins.Add(new InfoWindow(devices[choice], true));
-                    }
                     if (choice != -1)
-                        mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
+                    {
+                        if (choice == choices.size() - 1)
+                        {
+                            active = false;
+                        }
+                        else
+                        {
+                            infoWins.Add(new InfoWindow(devices[choice], true));
+                            mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
+                        }
+                    }
                     refresh();
                 }
             }

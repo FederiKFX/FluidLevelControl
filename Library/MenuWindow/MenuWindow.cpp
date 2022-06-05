@@ -25,18 +25,21 @@ int MenuWindow::ReportChoice(int mouse_y, int mouse_x)
 {
     int i, j, choice;
     int ret = -1;
-    i = m_x + m_textX;
-    j = m_y + m_textY + 1;
-
-    for (choice = 0; choice < m_choices.size(); ++choice)
+    if (IsClicked(mouse_y, mouse_x))
     {
-        if (mouse_y == j + choice && mouse_x >= i && mouse_x <= i + m_choices[choice].size())
+        i = m_x + m_textX;
+        j = m_y + m_textY + 1;
+
+        for (choice = 0; choice < m_choices.size(); ++choice)
         {
-            ret = choice;
-            break;
+            if (mouse_y == j + choice && mouse_x >= i && mouse_x <= i + m_choices[choice].size())
+            {
+                ret = choice;
+                break;
+            }
         }
+        m_highlight = ret;
     }
-    m_highlight = ret;
     return ret;
 }
 
