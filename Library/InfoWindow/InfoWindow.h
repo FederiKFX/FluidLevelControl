@@ -9,6 +9,9 @@ public:
             InfoWindow  (int y, int x, bool boxEn = false, int height = 0, int width = 0);
     void    SetData     (std::shared_ptr<StateData> data);
     void    Update      ();
+    void    Resize      (int height, int width);
+    int     GetHeight   ();
+    int     GetWidth    ();
 
 private:
     void    TextUpdate  ();

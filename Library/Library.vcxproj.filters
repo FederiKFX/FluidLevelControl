@@ -23,6 +23,7 @@
     <ClInclude Include="InfoWindow\InfoWindow.h">
       <Filter>InfoWindow</Filter>
     </ClInclude>
+    <ClInclude Include="WindowsGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MenuWindow\MenuWindow.cpp">
@@ -34,5 +35,6 @@
     <ClCompile Include="InfoWindow\InfoWindow.cpp">
       <Filter>InfoWindow</Filter>
     </ClCompile>
+    <ClCompile Include="WindowsGrid.cpp" />
   </ItemGroup>
 </Project>

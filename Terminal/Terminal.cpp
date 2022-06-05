@@ -2,9 +2,6 @@
 #include "InfoWindow/InfoWindow.h"
 #include <nlohmann/json.hpp>
 
-std::vector<std::shared_ptr<StateData>> devices;
-std::vector<std::shared_ptr<InfoWindow>> infoWins;
-
 mmask_t old;
 void initialize()
 {
@@ -21,12 +18,13 @@ void initialize()
 int main()
 {
     initialize();
+    std::vector<std::shared_ptr<StateData>> devices;
+    std::vector<std::shared_ptr<InfoWindow>> infoWins;
 
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
 
     std::vector<std::wstring> choices;
-
     for (auto dev : devices)
     {
         int numOfOn = 0;
@@ -48,24 +46,22 @@ int main()
 
 
 
-    MenuWindow statusWin(10, 5, true, 10, 10);
+    MenuWindow statusWin(10, 5, false, 10, 10);
     statusWin.SetChoices(choices);
-    statusWin.SetCaption(L"test");
-
-    //InfoWindow infoWin(20, 20, 5, 30, true);
-    
-    
-    //infoWin.SetData(data);
+    statusWin.SetCaption(L"Виберіть датчик:");
 
     refresh();
     statusWin.Update();
-    //infoWin.Update();
-
 
     int choice = 0;
+    int xStartPos = 30;
+    int y = 0, x = xStartPos;
+    int heightSTD = 0, widthSTD = 0;
+    int height = 0, width = 0;
     int ch;
     bool active = true;
     MEVENT event;
+    
     while (active)
     {
         ch = getch();
@@ -91,18 +87,32 @@ int main()
             {
                 if (event.bstate & BUTTON1_CLICKED) {
                     choice = statusWin.ReportChoice(event.y + 1, event.x + 1);
-                    if (choice == 0)
+
+                    if (choice == choices.size() - 1)
                     {
-                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(5, 30, true)));
-                        infoWins[0]->SetData(devices[0]);
-                    }
-                    if (choice == 1)
-                    {
-                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(5, 60, true)));
-                        infoWins[1]->SetData(devices[1]);
-                    }
-                    if (choice == 2)
                         active = false;
+                    }
+                    else
+                    {
+                        if (!infoWins.empty())
+                        {
+                            getmaxyx(stdscr, heightSTD, widthSTD);
+                            x += infoWins.back()->GetWidth();
+                            if (x + width > widthSTD)
+                            {
+                                y += height;
+                                x = xStartPos;
+                            }
+                        }
+                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(y, x, true)));
+                        infoWins.back()->SetData(devices[choice]);
+                        width < infoWins.back()->GetWidth() ? width = infoWins.back()->GetWidth() : NULL;
+                        height < infoWins.back()->GetHeight() ? height = infoWins.back()->GetHeight() : NULL;
+                        /*for (auto win : infoWins)
+                        {
+                            win->Resize(height, width);
+                        }*/
+                    }
                     if (choice != -1)
                         mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                     refresh();

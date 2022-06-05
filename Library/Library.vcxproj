@@ -163,11 +163,13 @@
     <ClInclude Include="InfoWindow\InfoWindow.h" />
     <ClInclude Include="MenuWindow\MenuWindow.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="WindowsGrid.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InfoWindow\InfoWindow.cpp" />
     <ClCompile Include="MenuWindow\MenuWindow.cpp" />
+    <ClCompile Include="WindowsGrid.cpp" />
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
