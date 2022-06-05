@@ -7,7 +7,7 @@ WindowsGrid::WindowsGrid(int y, int x) : m_y(y), m_x(x)
 
 void WindowsGrid::Add(Window* win)
 {
-    //m_Windows.emplace_back(std::make_unique<Window>(win));
+    m_Windows.emplace_back(win);
     m_width < m_Windows.back()->GetWidth() ? m_width = m_Windows.back()->GetWidth() : NULL;
     m_height < m_Windows.back()->GetHeight() ? m_height = m_Windows.back()->GetHeight() : NULL;
 }

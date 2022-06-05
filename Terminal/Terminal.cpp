@@ -19,7 +19,7 @@ int main()
 {
     initialize();
     std::vector<std::shared_ptr<StateData>> devices;
-    std::vector<std::shared_ptr<InfoWindow>> infoWins;
+    std::vector<std::shared_ptr<Window>> infoWins;
 
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
@@ -105,7 +105,8 @@ int main()
                             }
                         }
                         infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(y, x, true)));
-                        infoWins.back()->SetData(devices[choice]);
+                        InfoWindow * k =dynamic_cast<InfoWindow*> (infoWins.back().get());
+                        k->SetData(devices[choice]);
                         width < infoWins.back()->GetWidth() ? width = infoWins.back()->GetWidth() : NULL;
                         height < infoWins.back()->GetHeight() ? height = infoWins.back()->GetHeight() : NULL;
                         /*for (auto win : infoWins)
