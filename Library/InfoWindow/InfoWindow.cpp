@@ -31,13 +31,6 @@ void InfoWindow::Update()
     Window::Update();
 }
 
-/*void InfoWindow::Resize(int height, int width)
-{
-    m_height = height;
-    m_width = width;
-    wresize(m_window, m_height, m_width);
-}*/
-
 void InfoWindow::TextUpdate()
 {
     int x = m_textX;
