@@ -92,7 +92,7 @@ int main()
                         else
                         {
                             infoWins.Add(new InfoWindow(devices[choice], true));
-                            mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
+                            //mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                         }
                     }
                     refresh();

@@ -40,6 +40,10 @@ int MenuWindow::ReportChoice(int mouse_y, int mouse_x)
         }
         m_highlight = ret;
     }
+    else
+    {
+        m_highlight = -1;
+    }
     return ret;
 }
 
