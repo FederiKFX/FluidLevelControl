@@ -13,7 +13,8 @@ void InfoWindow::SetData(std::shared_ptr<StateData> data)
     if (!m_width || !m_height)
     {
         CalcSize();
-        wresize(m_window, m_height, m_width);
+        SetSize(m_height, m_width);
+        SizeUpdate();
     }
     if (m_boxEn)
         box(m_window, 0, 0);
