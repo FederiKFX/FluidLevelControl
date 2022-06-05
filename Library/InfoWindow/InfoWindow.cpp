@@ -7,6 +7,11 @@ InfoWindow::InfoWindow(int y, int x, bool boxEn, int height, int width) : Window
     init_pair(FluidType::TANK, COLOR_WHITE, COLOR_WHITE);
 }
 
+InfoWindow::InfoWindow(std::shared_ptr<StateData> data, bool boxEn) : Window(0, 0, boxEn, 0, 0)
+{
+    SetData(data);
+}
+
 void InfoWindow::SetData(std::shared_ptr<StateData> data)
 {
     m_Data = data;
@@ -25,6 +30,13 @@ void InfoWindow::Update()
     TextUpdate();
     Window::Update();
 }
+
+/*void InfoWindow::Resize(int height, int width)
+{
+    m_height = height;
+    m_width = width;
+    wresize(m_window, m_height, m_width);
+}*/
 
 void InfoWindow::TextUpdate()
 {

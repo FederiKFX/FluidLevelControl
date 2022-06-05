@@ -6,8 +6,16 @@ class Window
 public:
                     Window      (int y, int x, bool boxEn = false, int height = 0, int width = 0);
     virtual void    PosUpdate   ();
+<<<<<<< HEAD
     virtual void    SizeUpdate();
+=======
+    virtual void    SizeUpdate  ();
+>>>>>>> e00d40e40b41758669d17825acdbbef7530139a5
     virtual void    Update      ();
+    int             GetHeight   ();
+    int             GetWidth    ();
+    void            SetPos      (int y, int x);
+    void            SetSize     (int height, int width);
 
     int             GetHeight();
     int             GetWidth();
