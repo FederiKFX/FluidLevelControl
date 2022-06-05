@@ -1,5 +1,6 @@
 ﻿#include "MenuWindow/MenuWindow.h"
 #include "InfoWindow/InfoWindow.h"
+#include "WindowsGrid/WindowsGrid.h"
 #include <nlohmann/json.hpp>
 
 mmask_t old;
@@ -19,7 +20,7 @@ int main()
 {
     initialize();
     std::vector<std::shared_ptr<StateData>> devices;
-    std::vector<std::shared_ptr<InfoWindow>> infoWins;
+    WindowsGrid infoWins(0, 30);
 
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
@@ -61,7 +62,7 @@ int main()
     int ch;
     bool active = true;
     MEVENT event;
-    
+    InfoWindow* k = nullptr;
     while (active)
     {
         ch = getch();
@@ -72,13 +73,8 @@ int main()
             resize_term(0, 0);
             statusWin.PosUpdate();
             statusWin.Update();
-            for (auto win : infoWins)
-            {
-                win->PosUpdate();
-                win->Update();
-            }
-            //infoWin.PosUpdate();
-            //infoWin.Update();
+            infoWins.PosUpdate();
+            infoWins.Update();
             break;
         }
         case KEY_MOUSE:
@@ -92,26 +88,15 @@ int main()
                     {
                         active = false;
                     }
+                    if (choice == 1)
+                    {
+                        k->SetPos(5, 30);
+                        k->PosUpdate();
+                    }
                     else
                     {
-                        if (!infoWins.empty())
-                        {
-                            getmaxyx(stdscr, heightSTD, widthSTD);
-                            x += infoWins.back()->GetWidth();
-                            if (x + width > widthSTD)
-                            {
-                                y += height;
-                                x = xStartPos;
-                            }
-                        }
-                        infoWins.push_back(std::make_shared<InfoWindow>(InfoWindow(y, x, true)));
-                        infoWins.back()->SetData(devices[choice]);
-                        width < infoWins.back()->GetWidth() ? width = infoWins.back()->GetWidth() : NULL;
-                        height < infoWins.back()->GetHeight() ? height = infoWins.back()->GetHeight() : NULL;
-                        /*for (auto win : infoWins)
-                        {
-                            win->Resize(height, width);
-                        }*/
+                        //infoWins.Add(new InfoWindow(devices[choice], true));
+                        k = new InfoWindow(devices[choice], true);
                     }
                     if (choice != -1)
                         mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
@@ -119,10 +104,8 @@ int main()
                 }
             }
             refresh();
-            for (auto win : infoWins)
-            {
-                win->Update();
-            }
+            k->Update();
+            infoWins.Update();
             statusWin.Update();
             break;
         }
