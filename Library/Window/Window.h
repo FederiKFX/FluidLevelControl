@@ -14,10 +14,12 @@ public:
     void            SetPos      (int y, int x);
     void            SetSize     (int height, int width);
     bool            IsClicked   (int mouse_y, int mouse_x);
-
+    virtual std::wstring    GetWstr     (int y, int x, int capacity);
 protected:
     void            ColorOn     (int color);
     void            ColorOff    (int color);
+private:
+    std::wstring    GetWSTR(int y = 0, int x = 0, int capacity = 0);
 
 protected:
     WINDOW*     m_window;

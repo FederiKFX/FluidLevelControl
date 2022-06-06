@@ -119,11 +119,7 @@ int main()
                         }
                         if (choice == choices.size() - 2)
                         {
-                            wint_t buf[3];
-                            echo();
-                            int res = mvwget_wstr(statusWin.GetWin(), 1 + choice, 2 + choices[choice].size(), buf);
-                            noecho();
-                            //std::string t = getstring();
+                            std::wstring t = statusWin.GetWstr(0,0,0);
                             int k = 5;
                         }
                         else

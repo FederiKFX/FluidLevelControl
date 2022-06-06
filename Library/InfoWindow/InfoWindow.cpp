@@ -20,8 +20,6 @@ void InfoWindow::SetData(std::shared_ptr<StateData> data)
         SetSize(m_height, m_width);
         SizeUpdate();
     }
-    if (m_boxEn)
-        box(m_window, 0, 0);
 }
 
 void InfoWindow::Update()
@@ -34,6 +32,10 @@ int InfoWindow::ClickAction(int mouse_y, int mouse_x)
 {
     if (IsClicked(mouse_y, mouse_x))
     {
+        if (mouse_y == m_y + m_textY + 1 && mouse_x >= m_x + m_textX + m_Data->getNameInfo(L"").size() && mouse_x <= m_x + m_width - m_textX)
+        {
+            m_Data->name = GetWstr(mouse_y - 1 - m_y, m_textX + m_Data->getNameInfo(L"").size(), m_width - m_textX - m_textX - m_Data->getNameInfo(L"").size());
+        }
         for (size_t i = 0; i < m_sensorsPos.size(); ++i)
         {
             if (m_sensorsPos[i].first + m_y == mouse_y)
@@ -57,7 +59,7 @@ void InfoWindow::TextUpdate()
 {
     int x = m_textX;
     int y = m_textY;
-    mvwaddwstr(m_window, y++, x, m_Data->getNameInfo().data());
+    mvwaddwstr(m_window, y++, x, m_Data->getNameInfo(m_Data->name).data());
     mvwaddwstr(m_window, y++, x, m_Data->getFluidNameInfo().data());
     mvwaddwstr(m_window, y++, x, m_Data->getFullnessNameInfo().data());
     mvwaddwstr(m_window, y++, x, m_Data->getSensorsCaptionInfo().data());
