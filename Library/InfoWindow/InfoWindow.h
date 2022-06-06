@@ -17,7 +17,7 @@ private:
     void    TextUpdate  ();
     void    CalcSize    ();
 
-private:
+private:  
     int                         m_textX = 2;
     int                         m_textY = 1;
     std::shared_ptr<StateData>  m_Data;

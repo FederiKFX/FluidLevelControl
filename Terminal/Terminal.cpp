@@ -117,7 +117,7 @@ int main()
                         {
                             active = false;
                         }
-                        if (choice == choices.size() - 2)
+                        else if (choice == choices.size() - 2)
                         {
                             std::wstring t = statusWin.GetWstr(0,0,0);
                             int k = 5;
@@ -125,6 +125,7 @@ int main()
                         else
                         {
                             infoWins.Add(new InfoWindow(devices[choice], true));
+                            infoWins.SetRename(true);
                             //mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                         }
                     }

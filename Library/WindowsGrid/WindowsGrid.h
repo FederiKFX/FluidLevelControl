@@ -12,6 +12,7 @@ public:
     void    PosUpdate   ();
     void    SizeUpdate  ();
     void    ClickAction (int mouse_y, int mouse_x);
+    void    SetRename   (bool flag);
 
 private:
     void    CalcPos ();

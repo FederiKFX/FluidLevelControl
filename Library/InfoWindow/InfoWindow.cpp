@@ -32,7 +32,7 @@ int InfoWindow::ClickAction(int mouse_y, int mouse_x)
 {
     if (IsClicked(mouse_y, mouse_x))
     {
-        if (mouse_y == m_y + m_textY + 1 && mouse_x >= m_x + m_textX + m_Data->getNameInfo(L"").size() && mouse_x <= m_x + m_width - m_textX)
+        if (m_renameAllowed && (mouse_y == m_y + m_textY + 1 && mouse_x >= m_x + m_textX + m_Data->getNameInfo(L"").size() && mouse_x <= m_x + m_width - m_textX))
         {
             m_Data->name = GetWstr(mouse_y - 1 - m_y, m_textX + m_Data->getNameInfo(L"").size(), m_width - m_textX - m_textX - m_Data->getNameInfo(L"").size());
         }

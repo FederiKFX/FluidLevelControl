@@ -15,6 +15,8 @@ public:
     void            SetSize     (int height, int width);
     bool            IsClicked   (int mouse_y, int mouse_x);
     virtual std::wstring    GetWstr     (int y, int x, int capacity);
+public:
+    bool            m_renameAllowed = false;
 protected:
     void            ColorOn     (int color);
     void            ColorOff    (int color);
