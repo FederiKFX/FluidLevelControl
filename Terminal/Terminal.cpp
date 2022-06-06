@@ -3,6 +3,32 @@
 #include "WindowsGrid/WindowsGrid.h"
 #include <nlohmann/json.hpp>
 
+
+std::string getstring()
+{
+    std::string input;
+
+    // let the terminal do the line editing
+    nocbreak();
+    echo();
+
+    // this reads from buffer after <ENTER>, not "raw" 
+    // so any backspacing etc. has already been taken care of
+    int ch = getch();
+
+    while (ch != 13)
+    {
+        input.push_back(ch);
+        ch = getch();
+    }
+
+    noecho();
+    // restore your cbreak / echo settings here
+
+    return input;
+}
+
+
 mmask_t old;
 void initialize()
 {
@@ -57,6 +83,7 @@ int main()
         }
         dev->fullness = (float)numOfOn / dev->sensors.size() * 100;
     }
+    choices.push_back(L"Input: ");
     choices.push_back(L"Вихід");
 
 
@@ -103,9 +130,15 @@ int main()
                         {
                             active = false;
                         }
+                        else if (choice == choices.size() - 2)
+                        {
+                            std::wstring t = statusWin.GetWstr(0,0,0);
+                            int k = 5;
+                        }
                         else
                         {
                             infoWins.Add(new InfoWindow(devices[choice], true));
+                            infoWins.SetRename(true);
                             //mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                         }
                     }

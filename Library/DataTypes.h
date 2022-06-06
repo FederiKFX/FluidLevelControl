@@ -16,7 +16,7 @@ typedef struct _StateData
     int fullness;
     std::vector<bool> sensors;
 
-    std::wstring getNameInfo()
+    std::wstring getNameInfo(std::wstring name)
     {
         return L"Назва: " + name;
     }
@@ -39,7 +39,7 @@ typedef struct _StateData
     int getMaxWidth()
     {
         int ret = 0;
-        ret = getNameInfo().size() > getFluidNameInfo().size() ? getNameInfo().size() : getFluidNameInfo().size();
+        ret = getNameInfo(name).size() > getFluidNameInfo().size() ? getNameInfo(name).size() : getFluidNameInfo().size();
         ret = ret > getFullnessNameInfo().size() ? ret : getFullnessNameInfo().size();
         return ret;
     }
