@@ -69,10 +69,10 @@ void InfoWindow::TextUpdate()
         std::wstring message = m_Data->getSensorNameInfo(i);
         std::wstring tank(50, L'0');
         mvwaddwstr(m_window, y, x, message.data());
-        m_Data->sensors[i] ? ColorOn(m_Data->fluidType) : ColorOn(FluidType::TANK);
+        m_Data->sensors[i] ? PaintOn(m_Data->fluidType) : PaintOn(FluidType::TANK);
         m_sensorsPos.push_back(std::pair <int, int>(y + m_textY, x + message.size() + m_textX));
         mvwaddwstr(m_window, y++, x + message.size(), std::wstring(tank.begin(), tank.begin() + (m_width - message.size() - 2 * m_textX)).data());
-        m_Data->sensors[i] ? ColorOff(m_Data->fluidType) : ColorOff(FluidType::TANK);
+        m_Data->sensors[i] ? PaintOff(m_Data->fluidType) : PaintOff(FluidType::TANK);
     }
 }
 

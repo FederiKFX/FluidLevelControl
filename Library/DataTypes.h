@@ -2,6 +2,27 @@
 #include "includes.h"
 #include <algorithm>
 
+enum Colour
+{
+    TANK = 10,
+    WATER = 11,
+    GASOLINE = 12
+};
+
+typedef struct _StrData
+{
+    std::wstring str;
+    int line, y, x;
+    bool highlight;
+    Colour colour;
+
+    bool IsClicked(int wClickY, int wClickX)
+    {
+        return (wClickY == y) && (wClickX >= x) && (wClickX < x + str.size());
+    }
+
+} StrData;
+
 enum FluidType
 {
     TANK = 10,

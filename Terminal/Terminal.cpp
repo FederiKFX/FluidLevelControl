@@ -48,19 +48,6 @@ int main()
     std::vector<std::shared_ptr<StateData>> devices;
     WindowsGrid infoWins(0, 30);
 
-    StateData data = { L"Tanнпk 1", FluidType::GASOLINE, 53, { 1,1,1,1,0,0,0 } };
-    nlohmann::json j;
-
-    j["name"] = data.name;
-    j["type"] = data.fluidType;
-    //j["fulness"] = data.fullness;
-
-    nlohmann::json t = nlohmann::json::parse(j.dump());
-
-    std::wstring f(t.items().begin().value().begin(), t.items().begin().value().end());
-
-    mvaddwstr(0, 0, f.data());
-
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 3", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
@@ -88,7 +75,7 @@ int main()
 
 
 
-    MenuWindow statusWin(10, 5, false, 10, 10);
+    MenuWindow statusWin(10, 5, true, 10, 20);
     statusWin.SetChoices(choices);
     statusWin.SetCaption(L"Виберіть датчик:");
 
@@ -122,8 +109,8 @@ int main()
             if (getmouse(&event) == OK)
             {
                 if (event.bstate & BUTTON1_CLICKED) {
-                    choice = statusWin.ClickAction(event.y + 1, event.x + 1);
-                    infoWins.ClickAction(event.y + 1, event.x + 1);
+                    choice = statusWin.ClickAction(event.y, event.x);
+                    infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
                         if (choice == choices.size() - 1)
