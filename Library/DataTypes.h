@@ -4,10 +4,7 @@
 
 enum Colour
 {
-    DEFAULT = 99,
-    TANK = 10,
-    WATER = 11,
-    GASOLINE = 12
+    DEFAULT = 99
 };
 
 typedef struct _StrData

@@ -19,6 +19,7 @@ void Window::Update()
 {
     if (m_boxEn)
         box(m_window, 0, 0);
+    TextUpdate();
     wrefresh(m_window);
 }
 

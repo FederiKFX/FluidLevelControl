@@ -1,4 +1,5 @@
-﻿#include "MenuWindow/MenuWindow.h"
+﻿#include "Window/Window.h"
+#include "MenuInfo.h"
 #include "InfoWindow/InfoWindow.h"
 #include "WindowsGrid/WindowsGrid.h"
 #include <nlohmann/json.hpp>
@@ -46,7 +47,7 @@ int main()
 {
     initialize();
     std::vector<std::shared_ptr<StateData>> devices;
-    WindowsGrid infoWins(0, 30);
+    //WindowsGrid infoWins(0, 30);
 
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
@@ -74,13 +75,13 @@ int main()
     choices.push_back(L"Вихід");
 
 
-
-    MenuWindow statusWin(10, 5, true, 10, 20);
-    statusWin.SetChoices(choices);
-    statusWin.SetCaption(L"Виберіть датчик:");
+    MenuInfo menuInfo(choices);
+    Window menuWin(menuInfo.m_data, 10, 5, true, 10, 20);
+    //statusWin.SetChoices(choices);
+    //statusWin.SetCaption(L"Виберіть датчик:");
 
     refresh();
-    statusWin.Update();
+    menuWin.Update();
 
     int choice = 0;
     int xStartPos = 30;
@@ -98,10 +99,10 @@ int main()
         case KEY_RESIZE:
         {
             resize_term(0, 0);
-            statusWin.PosUpdate();
-            statusWin.Update();
-            infoWins.PosUpdate();
-            infoWins.Update();
+            menuWin.PosUpdate();
+            menuWin.Update();
+            //infoWins.PosUpdate();
+            //infoWins.Update();
             break;
         }
         case KEY_MOUSE:
@@ -109,33 +110,33 @@ int main()
             if (getmouse(&event) == OK)
             {
                 if (event.bstate & BUTTON1_CLICKED) {
-                    choice = statusWin.ClickAction(event.y, event.x);
-                    infoWins.ClickAction(event.y, event.x);
+                    choice = menuWin.ClickedAt(event.y, event.x);
+                    //infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
                         if (choice == choices.size() - 1)
                         {
                             active = false;
                         }
-                        else if (choice == choices.size() - 2)
+                        /*else if (choice == choices.size() - 2)
                         {
-                            std::wstring t = statusWin.GetWstr(0,0,0);
+                            std::wstring t = menuWin.GetWstr(0,0,0);
                             int k = 5;
-                        }
+                        }*/
                         else
                         {
-                            infoWins.Add(new InfoWindow(devices[choice], true));
-                            infoWins.SetRename(true);
-                            //mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
+                            //infoWins.Add(new InfoWindow(devices[choice], true));
+                            //infoWins.SetRename(true);
+                            mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                         }
                     }
                     refresh();
                 }
             }
             refresh();
-            infoWins.PosUpdate();
-            infoWins.Update();
-            statusWin.Update();
+            //infoWins.PosUpdate();
+            //infoWins.Update();
+            menuWin.Update();
             break;
         }
         }
