@@ -4,7 +4,10 @@
 
 enum Colour
 {
-    DEFAULT = 99
+    DEFAULT = 99,
+    TANK = 10,
+    WATER = 11,
+    GASOLINE = 12
 };
 
 typedef struct _StrData
@@ -12,8 +15,8 @@ typedef struct _StrData
     _StrData(std::wstring str, int line, bool highlight = 0, Colour colour = DEFAULT) : str(str), line(line), highlight(highlight), colour(colour) {};
     std::wstring str;
     int line, y = 0, x = 0;
-    bool highlight = 0;
-    Colour colour = DEFAULT;
+    bool highlight;
+    Colour colour;
 
     bool IsClicked(int wClickY, int wClickX)
     {
@@ -22,17 +25,10 @@ typedef struct _StrData
 
 } StrData;
 
-enum FluidType
-{
-    TANK = 10,
-    WATER = 11,
-    GASOLINE = 12
-};
-
 typedef struct _StateData
 {
     std::wstring name;
-    FluidType fluidType;
+    Colour fluidType;
     int fullness;
     std::vector<bool> sensors;
 

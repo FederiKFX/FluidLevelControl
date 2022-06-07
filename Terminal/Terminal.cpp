@@ -1,5 +1,6 @@
 ﻿#include "Window/Window.h"
 #include "MenuInfo.h"
+#include "DeviceInfo.h"
 #include "InfoWindow/InfoWindow.h"
 #include "WindowsGrid/WindowsGrid.h"
 #include <nlohmann/json.hpp>
@@ -46,12 +47,12 @@ void initialize()
 int main()
 {
     initialize();
-    std::vector<std::shared_ptr<StateData>> devices;
-    //WindowsGrid infoWins(0, 30);
+    std::vector<std::shared_ptr<DeviceInfo>> devices;
+    WindowsGrid infoWins(0, 30);
 
-    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 1", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
-    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 2", FluidType::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
-    devices.push_back(std::make_shared<StateData>(StateData{ L"Tank 3", FluidType::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tffffank 1", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 2", Colour::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
+    devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 3", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
 
     std::vector<std::wstring> choices;
     for (auto dev : devices)
@@ -101,8 +102,8 @@ int main()
             resize_term(0, 0);
             menuWin.PosUpdate();
             menuWin.Update();
-            //infoWins.PosUpdate();
-            //infoWins.Update();
+            infoWins.PosUpdate();
+            infoWins.Update();
             break;
         }
         case KEY_MOUSE:
@@ -111,7 +112,7 @@ int main()
             {
                 if (event.bstate & BUTTON1_CLICKED) {
                     choice = menuWin.ClickAction(event.y, event.x);
-                    //infoWins.ClickAction(event.y, event.x);
+                    infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
                         if (choice == choices.size() - 1)
@@ -125,8 +126,8 @@ int main()
                         }*/
                         else
                         {
-                            //infoWins.Add(new InfoWindow(devices[choice], true));
-                            //infoWins.SetRename(true);
+                            infoWins.Add(new Window(devices[choice], 0, 0, true));
+                            infoWins.SetRename(true);
                             mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, choices[choice].data());
                         }
                     }
@@ -134,8 +135,8 @@ int main()
                 }
             }
             refresh();
-            //infoWins.PosUpdate();
-            //infoWins.Update();
+            infoWins.PosUpdate();
+            infoWins.Update();
             menuWin.Update();
             break;
         }

@@ -50,9 +50,9 @@ int InfoWindow::ClickAction(int mouse_y, int mouse_x)
 
 void InfoWindow::ColourInit()
 {
-    init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
-    init_pair(FluidType::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
-    init_pair(FluidType::TANK, COLOR_WHITE, COLOR_WHITE);
+    init_pair(Colour::WATER, COLOR_BLUE, COLOR_BLUE);
+    init_pair(Colour::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(Colour::TANK, COLOR_WHITE, COLOR_WHITE);
 }
 
 void InfoWindow::TextUpdate()
@@ -69,10 +69,10 @@ void InfoWindow::TextUpdate()
         std::wstring message = m_Data->getSensorNameInfo(i);
         std::wstring tank(50, L'0');
         mvwaddwstr(m_window, y, x, message.data());
-        m_Data->sensors[i] ? PaintOn(m_Data->fluidType) : PaintOn(FluidType::TANK);
+        m_Data->sensors[i] ? PaintOn(m_Data->fluidType) : PaintOn(Colour::TANK);
         m_sensorsPos.push_back(std::pair <int, int>(y + m_textY, x + message.size() + m_textX));
         mvwaddwstr(m_window, y++, x + message.size(), std::wstring(tank.begin(), tank.begin() + (m_width - message.size() - 2 * m_textX)).data());
-        m_Data->sensors[i] ? PaintOff(m_Data->fluidType) : PaintOff(FluidType::TANK);
+        m_Data->sensors[i] ? PaintOff(m_Data->fluidType) : PaintOff(Colour::TANK);
     }
 }
 

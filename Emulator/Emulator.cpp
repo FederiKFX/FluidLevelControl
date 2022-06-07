@@ -6,7 +6,7 @@
 
 int main() {
 
-	StateData data = { L"Tanнпk 1", FluidType::GASOLINE, 53, { 1,1,1,1,0,0,0 } };
+	StateData data = { L"Tanнпk 1", Colour::GASOLINE, 53, { 1,1,1,1,0,0,0 } };
 	nlohmann::json j;
 
 	j["name"] = data.name;
