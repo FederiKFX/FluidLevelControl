@@ -5,7 +5,7 @@
 class Window
 {
 public:
-                    Window      (std::vector<StrData>* data, int y, int x, bool boxEn = false, int height = 0, int width = 0);
+                    Window      (std::shared_ptr<std::vector<StrData>> data, int y, int x, bool boxEn = false, int height = 0, int width = 0);
     virtual void    PosUpdate   ();
     virtual void    SizeUpdate  ();
     virtual void    Update      ();
@@ -20,13 +20,13 @@ public:
 public:
     bool            m_renameAllowed = false;
 protected:
-    bool            IsClicked(int mouse_y, int mouse_x);
+    bool            IsClicked   (int mouse_y, int mouse_x);
     void            PaintOn     (Colour color, bool highlight);
     void            PaintOff    (Colour color, bool highlight);
     std::wstring    GetWSTR     (int y = 0, int x = 0, int capacity = 0);
     void            TextUpdate  ();
 protected:
-    std::vector<StrData>    *m_data;
+    std::shared_ptr<std::vector<StrData>>    m_data;
     int                     m_textX = 2;
     int                     m_textY = 1;
 

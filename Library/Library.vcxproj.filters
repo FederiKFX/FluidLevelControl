@@ -29,6 +29,8 @@
     <ClInclude Include="WindowsGrid\WindowsGrid.h">
       <Filter>WindowsGrid</Filter>
     </ClInclude>
+    <ClInclude Include="Info.h" />
+    <ClInclude Include="MenuInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MenuWindow\MenuWindow.cpp">
@@ -43,6 +45,8 @@
     <ClCompile Include="WindowsGrid\WindowsGrid.cpp">
       <Filter>WindowsGrid</Filter>
     </ClCompile>
+    <ClCompile Include="Info.cpp" />
+    <ClCompile Include="MenuInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

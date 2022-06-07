@@ -4,6 +4,7 @@
 
 enum Colour
 {
+    DEFAULT = 99,
     TANK = 10,
     WATER = 11,
     GASOLINE = 12
@@ -11,10 +12,11 @@ enum Colour
 
 typedef struct _StrData
 {
+    _StrData(std::wstring str, int line, bool highlight = 0, Colour colour = DEFAULT) : str(str), line(line), highlight(highlight), colour(colour) {};
     std::wstring str;
-    int line, y, x;
-    bool highlight;
-    Colour colour;
+    int line, y = 0, x = 0;
+    bool highlight = 0;
+    Colour colour = DEFAULT;
 
     bool IsClicked(int wClickY, int wClickX)
     {

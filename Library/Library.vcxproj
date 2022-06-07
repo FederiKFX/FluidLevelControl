@@ -160,14 +160,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="Info.h" />
     <ClInclude Include="InfoWindow\InfoWindow.h" />
+    <ClInclude Include="MenuInfo.h" />
     <ClInclude Include="MenuWindow\MenuWindow.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="WindowsGrid\WindowsGrid.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Info.cpp" />
     <ClCompile Include="InfoWindow\InfoWindow.cpp" />
+    <ClCompile Include="MenuInfo.cpp" />
     <ClCompile Include="MenuWindow\MenuWindow.cpp" />
     <ClCompile Include="WindowsGrid\WindowsGrid.cpp" />
     <ClCompile Include="Window\Window.cpp" />

@@ -1,6 +1,6 @@
 #include "Window.h"
 
-Window::Window(std::vector<StrData>* data, int y, int x, bool boxEn, int height, int width) : m_data(data), m_height(height), m_width(width), m_y(y), m_x(x), m_boxEn(boxEn)
+Window::Window(std::shared_ptr<std::vector<StrData>> data, int y, int x, bool boxEn, int height, int width) : m_data(data), m_height(height), m_width(width), m_y(y), m_x(x), m_boxEn(boxEn)
 {
     m_window = newwin(m_height, m_width, m_y, m_x);
 }
