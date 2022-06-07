@@ -75,8 +75,8 @@ int main()
     choices.push_back(L"Вихід");
 
 
-    MenuInfo menuInfo(choices);
-    Window menuWin(menuInfo.m_data, 10, 5, true, 10, 20);
+    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
+    Window menuWin(menuInfo, 10, 5, true, 10, 20);
     //statusWin.SetChoices(choices);
     //statusWin.SetCaption(L"Виберіть датчик:");
 
@@ -110,7 +110,7 @@ int main()
             if (getmouse(&event) == OK)
             {
                 if (event.bstate & BUTTON1_CLICKED) {
-                    choice = menuWin.ClickedAt(event.y, event.x);
+                    choice = menuWin.ClickAction(event.y, event.x);
                     //infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {

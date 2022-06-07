@@ -1,15 +1,16 @@
 #pragma once
 #include "includes.h"
+#include "Info.h"
 #include "DataTypes.h"
 
 class Window
 {
 public:
-                    Window      (std::shared_ptr<std::vector<StrData>> data, int y, int x, bool boxEn = false, int height = 0, int width = 0);
+                    Window      (std::shared_ptr<Info> info, int y, int x, bool boxEn = false, int height = 0, int width = 0);
     virtual void    PosUpdate   ();
     virtual void    SizeUpdate  ();
     virtual void    Update      ();
-    //virtual int     ClickAction (int mouse_y, int mouse_x) = 0;
+    int             ClickAction (int mouse_y, int mouse_x);
     int             GetHeight   ();
     int             GetWidth    ();
     void            SetPos      (int y, int x);
@@ -19,6 +20,7 @@ public:
     virtual std::wstring    GetWstr     (int i);
 public:
     bool            m_renameAllowed = false;
+    std::shared_ptr<Info>   m_winInfo;
 protected:
     bool            IsClicked   (int mouse_y, int mouse_x);
     void            PaintOn     (Colour color, bool highlight);

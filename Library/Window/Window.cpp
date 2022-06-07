@@ -1,7 +1,8 @@
 #include "Window.h"
 
-Window::Window(std::shared_ptr<std::vector<StrData>> data, int y, int x, bool boxEn, int height, int width) : m_data(data), m_height(height), m_width(width), m_y(y), m_x(x), m_boxEn(boxEn)
+Window::Window(std::shared_ptr<Info> info, int y, int x, bool boxEn, int height, int width) : m_winInfo(info), m_height(height), m_width(width), m_y(y), m_x(x), m_boxEn(boxEn)
 {
+    m_data = m_winInfo->m_data;
     m_window = newwin(m_height, m_width, m_y, m_x);
 }
 
@@ -21,6 +22,11 @@ void Window::Update()
         box(m_window, 0, 0);
     TextUpdate();
     wrefresh(m_window);
+}
+
+int Window::ClickAction(int mouse_y, int mouse_x)
+{
+    return m_winInfo->ClickAction(ClickedAt(mouse_y, mouse_x));
 }
 
 int Window::GetHeight()
