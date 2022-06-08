@@ -21,8 +21,14 @@ void Window::SizeUpdate()
 void Window::Update()
 {
     if (m_boxEn)
-        box(m_window, 0, 0);
+        wborder(m_window, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+
     TextUpdate();
+    SizeUpdate();
+
+    if (m_boxEn)
+        box(m_window, 0, 0);
+
     wrefresh(m_window);
 }
 
