@@ -96,27 +96,30 @@ void Window::PaintOff(Colour color, bool highlight)
 
 void Window::TextUpdate()
 {
-    int y = 0, x = 0;
-    int maxWidth = 0;
-    m_height = 2 * m_textY;
-    m_width = 2 * m_textX;
-    for (auto& el : *m_data)
+    if (!m_data->empty())
     {
-        PaintOn(el.colour, el.highlight);
-        if (el.line != y)
+        int y = 0, x = 0;
+        int maxWidth = 0;
+        m_height = 2 * m_textY;
+        m_width = 2 * m_textX;
+        for (auto& el : *m_data)
         {
-            y++;
-            maxWidth < x ? maxWidth = x : NULL;
-            x = 0;
-        }   
-        mvwaddwstr(m_window, y + m_textY, x + m_textX, el.str.data());
-        el.y = y + m_textY;
-        el.x = x + m_textX;
-        x += el.str.size();
-        PaintOff(el.colour, el.highlight);
+            PaintOn(el.colour, el.highlight);
+            if (el.line != y)
+            {
+                y++;
+                maxWidth < x ? maxWidth = x : NULL;
+                x = 0;
+            }
+            mvwaddwstr(m_window, y + m_textY, x + m_textX, el.str.data());
+            el.y = y + m_textY;
+            el.x = x + m_textX;
+            x += el.str.size();
+            PaintOff(el.colour, el.highlight);
+        }
+        m_height += ++y;
+        m_width += maxWidth;
     }
-    m_height += ++y;
-    m_width += maxWidth;
 }
 
 std::wstring Window::GetWSTR(int y, int x, int capacity)

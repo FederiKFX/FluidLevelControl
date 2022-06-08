@@ -46,14 +46,6 @@ void WindowsGrid::ClickAction(int mouse_y, int mouse_x)
     }
 }
 
-void WindowsGrid::SetRename(bool flag)
-{
-    for (size_t i = 0; i < m_Windows.size(); ++i)
-    {
-        m_Windows[i]->m_renameAllowed = flag;
-    }
-}
-
 void WindowsGrid::CalcPos()
 {
     getmaxyx(stdscr, m_heightSTD, m_widthSTD);

@@ -1,54 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="MenuWindow">
-      <UniqueIdentifier>{81b1d51f-faeb-4763-bcbd-c50dc5ce6ac4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Window">
       <UniqueIdentifier>{e966da0f-a052-4eb2-854f-c351b6b811ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="InfoWindow">
-      <UniqueIdentifier>{d94827e9-6e5f-42b9-8e0e-d95231cca634}</UniqueIdentifier>
     </Filter>
     <Filter Include="WindowsGrid">
       <UniqueIdentifier>{91f11aee-9cd7-4508-8ed8-5538847332d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MenuInfo">
+      <UniqueIdentifier>{81b1d51f-faeb-4763-bcbd-c50dc5ce6ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Info">
+      <UniqueIdentifier>{d94827e9-6e5f-42b9-8e0e-d95231cca634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DeviceInfo">
+      <UniqueIdentifier>{94e933ad-85d2-44f2-9960-61ad9ef29246}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MenuWindow\MenuWindow.h">
-      <Filter>MenuWindow</Filter>
-    </ClInclude>
     <ClInclude Include="includes.h" />
-    <ClInclude Include="DataTypes.h" />
     <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoWindow\InfoWindow.h">
-      <Filter>InfoWindow</Filter>
     </ClInclude>
     <ClInclude Include="WindowsGrid\WindowsGrid.h">
       <Filter>WindowsGrid</Filter>
     </ClInclude>
-    <ClInclude Include="Info.h" />
-    <ClInclude Include="MenuInfo.h" />
-    <ClInclude Include="DeviceInfo.h" />
+    <ClInclude Include="Info\MenuInfo.h">
+      <Filter>MenuInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Info\Info.h">
+      <Filter>Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Info\DeviceInfo.h">
+      <Filter>DeviceInfo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MenuWindow\MenuWindow.cpp">
-      <Filter>MenuWindow</Filter>
-    </ClCompile>
     <ClCompile Include="Window\Window.cpp">
       <Filter>Window</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoWindow\InfoWindow.cpp">
-      <Filter>InfoWindow</Filter>
     </ClCompile>
     <ClCompile Include="WindowsGrid\WindowsGrid.cpp">
       <Filter>WindowsGrid</Filter>
     </ClCompile>
-    <ClCompile Include="Info.cpp" />
-    <ClCompile Include="MenuInfo.cpp" />
-    <ClCompile Include="DeviceInfo.cpp" />
+    <ClCompile Include="Info\MenuInfo.cpp">
+      <Filter>MenuInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Info\DeviceInfo.cpp">
+      <Filter>DeviceInfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

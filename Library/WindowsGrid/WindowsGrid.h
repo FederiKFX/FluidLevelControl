@@ -1,6 +1,5 @@
 #pragma once
 #include "includes.h"
-#include "DataTypes.h"
 #include "Window/Window.h"
 
 class WindowsGrid
@@ -8,14 +7,13 @@ class WindowsGrid
 public:
             WindowsGrid (int y, int x);
     void    Add         (Window* win);
-    void    Update      ();
     void    PosUpdate   ();
     void    SizeUpdate  ();
+    void    Update      ();
     void    ClickAction (int mouse_y, int mouse_x);
-    void    SetRename   (bool flag);
 
 private:
-    void    CalcPos ();
+    void    CalcPos     ();
 private:
     std::vector<std::unique_ptr<Window>> m_Windows;
     int m_y, m_x;

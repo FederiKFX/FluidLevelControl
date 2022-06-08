@@ -1,6 +1,5 @@
 #pragma once
 #include "Info.h"
-#include "DataTypes.h"
 
 class DeviceInfo : public Info
 {
