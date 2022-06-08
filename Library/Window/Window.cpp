@@ -83,11 +83,15 @@ std::wstring Window::GetWstr(int i)
 void Window::PaintOn(Colour color, bool highlight)
 {
     wattron(m_window, COLOR_PAIR(color));
+    if(highlight)
+        wattron(m_window, A_REVERSE);
 }
 
 void Window::PaintOff(Colour color, bool highlight)
 {
     wattroff(m_window, COLOR_PAIR(color));
+    if (highlight)
+        wattroff(m_window, A_REVERSE);
 }
 
 void Window::TextUpdate()
