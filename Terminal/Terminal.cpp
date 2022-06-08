@@ -52,19 +52,18 @@ int main()
     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
     Window menuWin(menuInfo, 10, 5, true);
 
-    refresh();
-    menuWin.Update();
 
-    int choice = 0;
-    int xStartPos = 30;
-    int y = 0, x = xStartPos;
-    int heightSTD = 0, widthSTD = 0;
-    int height = 0, width = 0;
     int ch;
     bool active = true;
     MEVENT event;
+    refresh();
     while (active)
     {
+        infoWins.PosUpdate();
+        infoWins.Update();
+        menuWin.Update();
+        refresh();
+
         ch = getch();
         switch (ch)
         {
@@ -80,7 +79,7 @@ int main()
             if (getmouse(&event) == OK)
             {
                 if (event.bstate & BUTTON1_CLICKED) {
-                    choice = menuWin.ClickAction(event.y, event.x);
+                    int choice = choice = menuWin.ClickAction(event.y, event.x);
                     infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
@@ -106,10 +105,7 @@ int main()
             break;
         }
         }
-        infoWins.PosUpdate();
-        infoWins.Update();
-        menuWin.Update();
-        refresh();
     }
     endwin();
+    return 0;
 }
