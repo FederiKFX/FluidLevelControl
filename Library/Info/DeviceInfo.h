@@ -1,6 +1,15 @@
 #pragma once
 #include "Info.h"
 
+struct Device 
+{
+    std::wstring name;
+    Colour fluidType;
+    int fullness;
+    std::vector<bool> sensors;
+    std::vector<bool> pins;
+};
+
 class DeviceInfo : public Info
 {
 public:
@@ -13,9 +22,6 @@ private:
 
     std::vector<int> m_sensorStrID;
 public:
-    std::wstring name;
-    Colour fluidType;
-    int fullness;
-    std::vector<bool> sensors;
+    std::shared_ptr<Device> m_device;
 };
 
