@@ -4,13 +4,13 @@
 class MenuInfo : public Info
 {
 public:
-    MenuInfo(const std::vector<std::wstring>& choices);
+    MenuInfo(std::shared_ptr<std::vector<std::wstring>> choices);
     void    AddChoice(std::wstring choice);
     void    UpdateStrData();
     int     ClickAction(int i);
 
 
 public:
-    std::vector<std::wstring> m_choices;
+    std::shared_ptr<std::vector<std::wstring>> m_choices;
 };
 
