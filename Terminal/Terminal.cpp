@@ -1,35 +1,8 @@
 ﻿#include "Window/Window.h"
-#include "MenuInfo.h"
-#include "DeviceInfo.h"
-#include "InfoWindow/InfoWindow.h"
+#include "Info/MenuInfo.h"
+#include "Info/DeviceInfo.h"
 #include "WindowsGrid/WindowsGrid.h"
 #include <nlohmann/json.hpp>
-
-
-std::string getstring()
-{
-    std::string input;
-
-    // let the terminal do the line editing
-    nocbreak();
-    echo();
-
-    // this reads from buffer after <ENTER>, not "raw" 
-    // so any backspacing etc. has already been taken care of
-    int ch = getch();
-
-    while (ch != 13)
-    {
-        input.push_back(ch);
-        ch = getch();
-    }
-
-    noecho();
-    // restore your cbreak / echo settings here
-
-    return input;
-}
-
 
 mmask_t old;
 void initialize()
@@ -54,11 +27,11 @@ int main()
     devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 2", Colour::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
     devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 3", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
 
-    std::shared_ptr<std::vector<std::wstring>>  choices = std::make_shared<std::vector<std::wstring>>();
+    std::vector<std::shared_ptr<std::wstring>> choices;
     for (auto dev : devices)
     {
         int numOfOn = 0;
-        choices->push_back(dev->name);
+        choices.push_back(std::make_shared<std::wstring>(dev->name));
         for (auto sensor : dev->sensors)
         {
             if (sensor)
@@ -72,14 +45,12 @@ int main()
         }
         dev->fullness = (float)numOfOn / dev->sensors.size() * 100;
     }
-    choices->push_back(L"Input: ");
-    choices->push_back(L"Вихід");
+    choices.push_back(std::make_shared<std::wstring>(L"Input: "));
+    choices.push_back(std::make_shared<std::wstring>(L"Вихід"));
 
 
     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
-    Window menuWin(menuInfo, 10, 5, true, 10, 20);
-    //statusWin.SetChoices(choices);
-    //statusWin.SetCaption(L"Виберіть датчик:");
+    Window menuWin(menuInfo, 10, 5, true);
 
     refresh();
     menuWin.Update();
@@ -113,21 +84,22 @@ int main()
                     infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
-                        if (choice == choices->size() - 1)
+                        if (choice == choices.size() - 1)
                         {
                             active = false;
                         }
-                        else if (choice == choices->size() - 2)
+                        else if (choice == choices.size() - 2)
                         {
-                            menuInfo->m_choices->at(choice) = menuWin.GetWstr(choice);
-                            menuInfo->UpdateStrData();
+                            //menuInfo->m_choices->at(choice) = menuWin.GetWstr(choice);
+                            menuInfo->AddChoice(std::make_shared < std::wstring>(L"Input2: "));
+                            //choices->push_back(L"Input2: ");
+                            menuWin.Update();
                         }
-                        else
+                        else if (choice < devices.size())
                         {
                             infoWins.Add(new Window(devices[choice], 0, 0, true));
-                            infoWins.SetRename(true);
-                            mvprintw(22, 1, "Choice made is : %d. String Chosen is \"%10s\"", choice, (*choices)[choice].data());
                         }
+                        mvprintw(22, 1, "Choice made is : %d", choice);
                     }
                 }
             }            
@@ -140,5 +112,4 @@ int main()
         refresh();
     }
     endwin();
-    return 0;
 }
