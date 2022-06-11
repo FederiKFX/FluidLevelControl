@@ -18,7 +18,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="includes.h" />
+    <ClInclude Include="includes.hpp" />
     <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
     </ClInclude>
@@ -34,6 +34,7 @@
     <ClInclude Include="Info\DeviceInfo.h">
       <Filter>DeviceInfo</Filter>
     </ClInclude>
+    <ClInclude Include="mosquitto.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window\Window.cpp">
