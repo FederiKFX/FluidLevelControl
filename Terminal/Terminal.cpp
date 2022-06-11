@@ -85,8 +85,6 @@ int main()
     
     mosquitto_lib_init();
     
- 
-    //mosquitto_threaded_set(mosq, true);
     std::thread mosqThread([&] {
         struct mosquitto* mosq;
         mosq = mosquitto_new(NULL, true, devices.get());
@@ -126,93 +124,93 @@ int main()
 
 
 
-//      initialize();
-//      std::vector<std::shared_ptr<DeviceInfo>> devices;
-//      WindowsGrid infoWins(0, 30);
-//  
-//      devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tffffank 1", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
-//      devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 2", Colour::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
-//      devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 3", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
-//  
-//      std::vector<std::shared_ptr<std::wstring>> choices;
-//      for (auto dev : devices)
-//      {
-//          int numOfOn = 0;
-//          choices.push_back(std::make_shared<std::wstring>(dev->name));
-//          for (auto sensor : dev->sensors)
-//          {
-//              if (sensor)
-//              {
-//                  numOfOn++;
-//              }
-//              else
-//              {
-//                  break;
-//              }
-//          }
-//          dev->fullness = (float)numOfOn / dev->sensors.size() * 100;
-//      }
-//      choices.push_back(std::make_shared<std::wstring>(L"Input: "));
-//      choices.push_back(std::make_shared<std::wstring>(L"Вихід"));
-//  
-//  
-//      std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
-//      Window menuWin(menuInfo, 10, 5, true);
-//  
-//  
-//      int ch;
-//      MEVENT event;
-//      refresh();
-//      while (active)
-//      {
-//          infoWins.PosUpdate();
-//          infoWins.Update();
-//          menuWin.Update();
-//          refresh();
-//  
-//          ch = getch();
-//          switch (ch)
-//          {
-//          case KEY_RESIZE:
-//          {
-//              resize_term(0, 0);
-//              menuWin.PosUpdate();
-//              infoWins.PosUpdate();
-//              break;
-//          }
-//          case KEY_MOUSE:
-//          {
-//              if (getmouse(&event) == OK)
-//              {
-//                  if (event.bstate & BUTTON1_CLICKED) {
-//                      int choice = choice = menuWin.ClickAction(event.y, event.x);
-//                      infoWins.ClickAction(event.y, event.x);
-//                      if (choice != -1)
-//                      {
-//                          if (choice == choices.size() - 1)
-//                          {
-//                              active = false;
-//                          }
-//                          else if (choice == choices.size() - 2)
-//                          {
-//                              //menuInfo->m_choices->at(choice) = menuWin.GetWstr(choice);
-//                              menuInfo->AddChoice(std::make_shared < std::wstring>(L"Input2: "));
-//                              //choices->push_back(L"Input2: ");
-//                              menuWin.Update();
-//                          }
-//                          else if (choice < devices.size())
-//                          {
-//                              infoWins.Add(new Window(devices[choice], 0, 0, true));
-//                          }
-//                          mvprintw(22, 1, "Choice made is : %d", choice);
-//                      }
-//                  }
-//              }            
-//              break;
-//          }
-//          }
-//      }
-//      endwin();
+     initialize();
+     std::vector<std::shared_ptr<DeviceInfo>> devices;
+     WindowsGrid infoWins(0, 30);
+ 
+     devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tffffank 1", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
+     devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 2", Colour::WATER, 0, { 1,1,1,1,1,0,0,0 } }));
+     devices.push_back(std::make_shared<DeviceInfo>(DeviceInfo{ L"Tank 3", Colour::GASOLINE, 0, { 1,1,1,1,0,0,0 } }));
+ 
+     std::vector<std::shared_ptr<std::wstring>> choices;
+     for (auto dev : devices)
+     {
+         int numOfOn = 0;
+         choices.push_back(std::make_shared<std::wstring>(dev->name));
+         for (auto sensor : dev->sensors)
+         {
+             if (sensor)
+             {
+                 numOfOn++;
+             }
+             else
+             {
+                 break;
+             }
+         }
+         dev->fullness = (float)numOfOn / dev->sensors.size() * 100;
+     }
+     choices.push_back(std::make_shared<std::wstring>(L"Input: "));
+     choices.push_back(std::make_shared<std::wstring>(L"Вихід"));
+ 
+ 
+     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
+     Window menuWin(menuInfo, 10, 5, true);
+ 
+ 
+     int ch;
+     MEVENT event;
+     refresh();
+     while (active)
+     {
+         infoWins.PosUpdate();
+         infoWins.Update();
+         menuWin.Update();
+         refresh();
+ 
+         ch = getch();
+         switch (ch)
+         {
+         case KEY_RESIZE:
+         {
+             resize_term(0, 0);
+             menuWin.PosUpdate();
+             infoWins.PosUpdate();
+             break;
+         }
+         case KEY_MOUSE:
+         {
+             if (getmouse(&event) == OK)
+             {
+                 if (event.bstate & BUTTON1_CLICKED) {
+                     int choice = choice = menuWin.ClickAction(event.y, event.x);
+                     infoWins.ClickAction(event.y, event.x);
+                     if (choice != -1)
+                     {
+                         if (choice == choices.size() - 1)
+                         {
+                             active = false;
+                         }
+                         else if (choice == choices.size() - 2)
+                         {
+                             //menuInfo->m_choices->at(choice) = menuWin.GetWstr(choice);
+                             menuInfo->AddChoice(std::make_shared < std::wstring>(L"Input2: "));
+                             //choices->push_back(L"Input2: ");
+                             menuWin.Update();
+                         }
+                         else if (choice < devices.size())
+                         {
+                             infoWins.Add(new Window(devices[choice], 0, 0, true));
+                         }
+                         mvprintw(22, 1, "Choice made is : %d", choice);
+                     }
+                 }
+             }            
+             break;
+         }
+         }
+     }
+     endwin();
      WaitForSingleObject(mosqThread.native_handle(), INFINITE);
      return 0;
 }
