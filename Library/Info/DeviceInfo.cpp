@@ -1,12 +1,29 @@
 #include "DeviceInfo.h"
 
-DeviceInfo::DeviceInfo(std::wstring name, Colour fluidType, int fullness, std::vector<bool> sensors)
+void from_json(const nlohmann::json& j, Device& d)
 {
-    m_device->name = name;
-    m_device->fluidType = fluidType;
-    m_device->fullness = fullness;
-    m_device->sensors = sensors;
+    j.at("id").get_to(d.id);
+    j.at("name").get_to(d.name);
+    j.at("fluidType").get_to(d.fluidType);
+    j.at("fullness").get_to(d.fullness);
+    j.at("sensors").get_to(d.sensors);
+    j.at("pins").get_to(d.pins);
+}
 
+void to_json(nlohmann::json& j, const Device& d)
+{
+    j = nlohmann::json{
+        { "id", d.id },
+        { "name", d.name },
+        { "fluidType", d.fluidType },
+        { "fullness", d.fullness },
+        { "sensors", d.sensors },
+        { "pins", d.pins }
+    };
+}
+
+DeviceInfo::DeviceInfo(std::shared_ptr<Device> device): m_device(device)
+{
     m_data = std::make_shared<std::vector<StrData>>();
     UpdateStrData();
     init_pair(Colour::WATER, COLOR_BLUE, COLOR_BLUE);
