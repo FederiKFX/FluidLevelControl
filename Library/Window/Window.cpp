@@ -22,10 +22,9 @@ void Window::Update()
 {
     if (m_boxEn)
         wborder(m_window, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+    wrefresh(m_window);
     delwin(m_window);
-    refresh();
-    //if (m_boxEn)
-       // wborder(m_window, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+
     m_window = newwin(m_height, m_width, m_y, m_x);
     TextUpdate();
     SizeUpdate();

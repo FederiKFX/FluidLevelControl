@@ -20,10 +20,15 @@ void WindowsGrid::Del(int i)
 
 void WindowsGrid::Update()
 {
+    int w, h;
     for (size_t i = 0; i < m_InfoVec.size(); ++i)
     {
         m_InfoVec[i]->UpdateStrData();
         m_InfoVec[i]->m_window->Update();
+        h = m_InfoVec[i]->m_window->GetHeight();
+        w = m_InfoVec[i]->m_window->GetWidth();
+        m_height < h ? m_height = h : NULL;
+        m_width < w ? m_width = w : NULL;
     }
 }
 
