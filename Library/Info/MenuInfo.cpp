@@ -2,9 +2,10 @@
 
 MenuInfo::MenuInfo(std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices) : m_choices(choices)
 {
-    m_data = std::make_shared<std::vector<StrData>>();
     init_pair(Colour::DEFAULT, COLOR_WHITE, COLOR_BLACK);
+    m_data = std::make_shared<std::vector<StrData>>();
     UpdateStrData();
+    m_window = std::make_shared<Window>(m_data, 10, 5, true);
 }
 
 void MenuInfo::AddChoice(std::pair<uint64_t, std::wstring> choice)
@@ -27,8 +28,9 @@ void MenuInfo::UpdateStrData()
     }   
 }
 
-int MenuInfo::ClickAction(int i)
+int MenuInfo::ClickAction(int mouse_y, int mouse_x)
 {   
+    int i = m_window->ClickedAt(mouse_y, mouse_x);
     if (i != -1)
         (*m_data)[i].highlight = !(*m_data)[i].highlight;
 

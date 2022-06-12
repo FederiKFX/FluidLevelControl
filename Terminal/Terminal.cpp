@@ -96,7 +96,6 @@ int main()
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
 
     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
-    Window menuWin(menuInfo, 10, 5, true);
 
 
     int ch;
@@ -120,7 +119,7 @@ int main()
                 infoWins.PosUpdate();
                 infoWins.Update();
                 menuInfo->UpdateStrData();
-                menuWin.Update();
+                menuInfo->m_window->Update();
                 refresh();
             }
         }).detach();
@@ -132,7 +131,7 @@ int main()
         {
             std::scoped_lock lck(win);
             resize_term(0, 0);
-            menuWin.PosUpdate();
+            menuInfo->m_window->PosUpdate();
             infoWins.PosUpdate();
             break;
         }
@@ -142,7 +141,7 @@ int main()
             {
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
-                    int choice = choice = menuWin.ClickAction(event.y, event.x);
+                    int choice = menuInfo->ClickAction(event.y, event.x);
                     bool is = infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
@@ -162,7 +161,7 @@ int main()
                             else
                             {
                                 activWins.push_back(choices->at(choice).first);
-                                infoWins.Add(new Window(std::make_shared<DeviceInfo>(devices->at(choice)), 0, 0, true));
+                                infoWins.Add(std::make_shared<DeviceInfo>(devices->at(choice)));
                             }
                         }
                         mvprintw(22, 1, "Choice made is : %d", choice);
@@ -176,7 +175,7 @@ int main()
         infoWins.PosUpdate();
         infoWins.Update();
         menuInfo->UpdateStrData();
-        menuWin.Update();
+        menuInfo->m_window->Update();
         refresh();
     }
     endwin();

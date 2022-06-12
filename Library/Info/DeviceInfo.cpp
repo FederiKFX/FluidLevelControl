@@ -22,10 +22,11 @@ void to_json(nlohmann::json& j, const Device& d)
     };
 }
 
-DeviceInfo::DeviceInfo(std::shared_ptr<Device> device): m_device(device)
+DeviceInfo::DeviceInfo(std::shared_ptr<Device> device) : m_device(device)
 {
     m_data = std::make_shared<std::vector<StrData>>();
     UpdateStrData();
+    m_window = std::make_shared<Window>(m_data, 0, 0, true);
     init_pair(Colour::WATER, COLOR_BLUE, COLOR_BLUE);
     init_pair(Colour::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
     init_pair(Colour::TANK, COLOR_WHITE, COLOR_WHITE);
@@ -53,12 +54,17 @@ void DeviceInfo::UpdateStrData()
         if (m_device->sensors[i])
             col = m_device->fluidType;
         m_sensorStrID.push_back(m_data->size());
-        m_data->push_back(StrData(L"00000", line++, 0, col));
+        m_data->push_back(StrData(L"000000", line++, 0, col));
     } 
 }
 
-int DeviceInfo::ClickAction(int i)
+int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
 {
+    int i = m_window->ClickedAt(mouse_y, mouse_x);
+    if (i == 1)
+    {
+        m_device->name = m_window->GetWstr(i);
+    }
     auto pos = std::find(m_sensorStrID.begin(), m_sensorStrID.end(), i) - m_sensorStrID.begin();
     if (pos < m_sensorStrID.size()) {
         m_device->sensors[m_device->sensors.size() - 1 - pos] = !m_device->sensors[m_device->sensors.size() - 1 - pos];

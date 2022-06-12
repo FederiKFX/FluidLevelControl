@@ -20,13 +20,15 @@ class DeviceInfo : public Info
 public:
     DeviceInfo(std::shared_ptr<Device> device);
     void    UpdateStrData();
-    int     ClickAction(int i);
+    int     ClickAction(int mouse_y, int mouse_x);
+
+public:
+    std::shared_ptr<Device> m_device;
 
 private:
     std::wstring getFluidName();
 
+private:
     std::vector<int> m_sensorStrID;
-public:
-    std::shared_ptr<Device> m_device;
 };
 
