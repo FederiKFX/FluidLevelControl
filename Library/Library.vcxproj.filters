@@ -16,9 +16,12 @@
     <Filter Include="DeviceInfo">
       <UniqueIdentifier>{94e933ad-85d2-44f2-9960-61ad9ef29246}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SetupInfo">
+      <UniqueIdentifier>{5a095e41-adbe-4738-bbbb-20178bbffac7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="includes.hpp" />
+    <ClInclude Include="includes.h" />
     <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
     </ClInclude>
@@ -35,6 +38,9 @@
       <Filter>DeviceInfo</Filter>
     </ClInclude>
     <ClInclude Include="mosquitto.hpp" />
+    <ClInclude Include="Info\SetupInfo.h">
+      <Filter>SetupInfo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window\Window.cpp">
@@ -49,6 +55,10 @@
     <ClCompile Include="Info\DeviceInfo.cpp">
       <Filter>DeviceInfo</Filter>
     </ClCompile>
+    <ClCompile Include="Info\SetupInfo.cpp">
+      <Filter>SetupInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

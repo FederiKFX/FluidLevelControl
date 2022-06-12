@@ -1,5 +1,5 @@
 #pragma once
-#include "includes.hpp"
+#include "includes.h"
 #include "Window/Window.h"
 
 class WindowsGrid
@@ -7,6 +7,7 @@ class WindowsGrid
 public:
             WindowsGrid (int y, int x);
     void    Add         (Window* win);
+    void    Del         (int i);
     void    PosUpdate   ();
     void    SizeUpdate  ();
     void    Update      ();

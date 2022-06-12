@@ -159,10 +159,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="includes.hpp" />
+    <ClInclude Include="includes.h" />
     <ClInclude Include="Info\DeviceInfo.h" />
     <ClInclude Include="Info\Info.h" />
     <ClInclude Include="Info\MenuInfo.h" />
+    <ClInclude Include="Info\SetupInfo.h" />
     <ClInclude Include="mosquitto.hpp" />
     <ClInclude Include="WindowsGrid\WindowsGrid.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -175,6 +176,8 @@
   <ItemGroup>
     <ClCompile Include="Info\DeviceInfo.cpp" />
     <ClCompile Include="Info\MenuInfo.cpp" />
+    <ClCompile Include="Info\SetupInfo.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="WindowsGrid\WindowsGrid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
