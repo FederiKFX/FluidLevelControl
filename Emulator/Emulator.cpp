@@ -142,7 +142,7 @@ int main()
     {
         std::thread([&] {
             while (active) {
-                Sleep(800);
+                Sleep(1000);
                 std::scoped_lock lck(win);
                 infoWins.PosUpdate();
                 infoWins.Update();

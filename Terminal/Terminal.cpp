@@ -60,7 +60,7 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
             }
             else
             {
-                *it = dev;
+                **it = *dev;
             }
         }
     }
@@ -148,7 +148,7 @@ int main()
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
                     int choice = menuInfo->ClickAction(event.y, event.x);
-                    bool is = infoWins.ClickAction(event.y, event.x);
+                    //bool is = infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
                         if (choice == choices->size() - 1)
