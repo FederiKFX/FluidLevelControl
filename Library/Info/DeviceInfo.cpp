@@ -65,7 +65,7 @@ int DeviceInfo::ClickAction(int i)
         UpdateStrData();
     }
     
-    return pos;
+    return i;
 }
 
 std::wstring DeviceInfo::getFluidName()

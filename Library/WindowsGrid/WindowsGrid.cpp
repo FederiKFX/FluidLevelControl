@@ -43,12 +43,15 @@ void WindowsGrid::SizeUpdate()
     }
 }
 
-void WindowsGrid::ClickAction(int mouse_y, int mouse_x)
+bool WindowsGrid::ClickAction(int mouse_y, int mouse_x)
 {
+    bool res = false;
     for (size_t i = 0; i < m_Windows.size(); ++i)
     {
-        m_Windows[i]->ClickAction(mouse_y, mouse_x);
+        if (m_Windows[i]->ClickAction(mouse_y, mouse_x) != -1)
+            res = true;
     }
+    return res;
 }
 
 void WindowsGrid::CalcPos()
