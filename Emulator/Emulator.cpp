@@ -1,17 +1,27 @@
-﻿#include <iostream>
-#include <Windows.h>
-
+﻿#include "Window/Window.h"
+#include "Info/MenuInfo.h"
 #include "Info/DeviceInfo.h"
+#include "WindowsGrid/WindowsGrid.h"
+
+mmask_t old;
+void initialize()
+{
+    initscr();
+    noecho();
+    nonl();
+    raw();
+    keypad(stdscr, TRUE);
+    mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, &old);
+    curs_set(0);
+    start_color();
+}
 
 void on_connect(struct mosquitto* mosq, void* obj, int rc) {
-    //printf("ID: %d\n", *(int*)obj);
-    std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
-    if (rc) {
-        printf("Error with result code: %d\n", rc);
-        exit(-1);
+    if (rc == MOSQ_ERR_SUCCESS)
+    {
+        //mosquitto_subscribe(mosq, NULL, "Status/#", 0);
+        mosquitto_subscribe(mosq, NULL, "Setup/#", 0);
     }
-    //mosquitto_subscribe(mosq, NULL, "Status/#", 0);
-    //mosquitto_subscribe(mosq, NULL, "Setup/#", 0);
 }
 
 void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
@@ -44,27 +54,17 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
 void DeviceSimulation(std::shared_ptr<Device> device)
 {
     struct mosquitto* mosq;
-    mosq = mosquitto_new(std::to_string(device->id).data(), true, device.get());
+    mosq = mosquitto_new(("Dev" + std::to_string(device->id)).data(), true, device.get());
 
     mosquitto_connect_callback_set(mosq, on_connect);
     mosquitto_message_callback_set(mosq, on_message);
 
     if (mosquitto_connect(mosq, "localhost", 1883, 10) == MOSQ_ERR_SUCCESS)
     {
-        std::string msg1 = "Info";
-
-        mosquitto_loop_start(mosq);
-        Sleep(500);
-
-        mosquitto_publish(mosq, NULL, ("Setup/Dev" + std::to_string(device->id)).data(), msg1.size(), msg1.c_str(), 0, false);
-
-        nlohmann::json j = *(device.get());
-
-        std::string msg = j.dump();
-        mosquitto_publish(mosq, NULL, "Init", msg.size(), msg.c_str(), 0, false);
-        std::cout << msg << std::endl;
         while (true)
         {
+            nlohmann::json j = *(device.get());
+            std::string msg = j.dump();
             mosquitto_publish(mosq, NULL, ("Status/Dev" + std::to_string(device->id)).data(), msg.size(), msg.c_str(), 0, false);
             Sleep(10000);
         }
@@ -77,32 +77,7 @@ void DeviceSimulation(std::shared_ptr<Device> device)
 
 int main()
 {
-
-// 	StateData data = { L"Tanнпk 1", Colour::GASOLINE, 53, { 1,1,1,1,0,0,0 } };
-// 	nlohmann::json j;
-// 
-// 	j["name"] = data.name;
-// 	j["type"] = data.fluidType;
-// 	j["fulness"] = data.fullness;
-// 
-// 	std::cout << j.dump() << std::endl;
-// 
-// 	nlohmann::json t = nlohmann::json::parse(j.dump());
-// 
-// 	std::wstring f(t.items().begin().value().begin(), t.items().begin().value().end());
-// 	//f.push_back(1085);
-// 	//f.push_back(1087);
-// 
-// 	std::wstring h;
-//     for (auto& [key, value] : t.items())
-//     {
-//         if (key == "name")
-//         {
-// 			std::wstring f(value.begin(), value.end());
-//         }
-//     }
-// 	std::wcout << f << std::endl;
-	//std::cout << t.items().begin().value() << std::endl;
+    bool active = true;
 
     std::vector<std::shared_ptr<Device>> devices;
     devices.push_back(std::make_shared<Device>());
@@ -113,7 +88,7 @@ int main()
     devices[0]->fluidType = Colour::GASOLINE;
 
     devices[1]->sensors = { 1,1,1,1,0,0 };
-    devices[0]->id = 18;
+    devices[1]->id = 18;
     devices[1]->name = L"Dev1";
     devices[1]->fluidType = Colour::WATER;
 
@@ -136,16 +111,112 @@ int main()
 
     mosquitto_lib_init();
 
-    std::thread thr1(DeviceSimulation, devices[0]);
-    std::thread thr2(DeviceSimulation, devices[1]);
+    //std::thread thr1(DeviceSimulation, devices[0]);
+    //std::thread thr2(DeviceSimulation, devices[1]);
+
+
+    initialize();
+    WindowsGrid infoWins(0, 30);
+
+    std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
+    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Додати пристрій"));
+    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Видалити пристрій"));
+    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
+
+    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
+    Window menuWin(menuInfo, 10, 5, true);
+
 
     //int res = WaitForSingleObject(thr1.native_handle(), INFINITE);
-    thr1.detach();
-    Sleep(1000);
+    //thr1.detach();
+    //Sleep(1000);
     //devices[0]->name = L"Dev010";
-    thr2.join();
+    //thr2.detach();
 
 
+    int ch;
+    MEVENT event;
+    std::mutex win;
+    std::vector<uint64_t> activWins;
+    refresh();
+    while (active)
+    {
+        std::thread([&] {
+            while (active) {
+                Sleep(800);
+                std::scoped_lock lck(win);
+                infoWins.PosUpdate();
+                infoWins.Update();
+                menuInfo->UpdateStrData();
+                menuWin.Update();
+                refresh();
+            }
+            }).detach();
+
+        ch = getch();
+        switch (ch)
+        {
+        case KEY_RESIZE:
+        {
+            std::scoped_lock lck(win);
+            resize_term(0, 0);
+            menuWin.PosUpdate();
+            infoWins.PosUpdate();
+            break;
+        }
+        case KEY_MOUSE:
+        {
+            if (getmouse(&event) == OK)
+            {
+                if (event.bstate & BUTTON1_CLICKED) {
+                    std::scoped_lock lck(win);
+                    int choice = choice = menuWin.ClickAction(event.y, event.x);
+                    bool is = infoWins.ClickAction(event.y, event.x);
+                    if (choice != -1)
+                    {
+                        if (choice == choices->size() - 1)
+                        {
+                            active = false;
+                        }
+                        if (choice == 0)
+                        {
+                            std::shared_ptr<Device> dev = std::make_shared<Device>();
+                            dev->id = devices.size() + 5;
+                            devices.push_back(dev);
+                            infoWins.Add(new Window(std::make_shared<DeviceInfo>(dev), 0, 0, true));
+                            std::thread(DeviceSimulation, dev).detach();
+                        }
+                        /*else if (choice < devices->size())
+                        {
+                            auto it = std::find(activWins.begin(), activWins.end(), choices->at(choice).first);
+                            if (it != activWins.end())
+                            {
+                                infoWins.Del(it - activWins.begin());
+                                activWins.erase(it);
+                                clear();
+                            }
+                            else
+                            {
+                                activWins.push_back(choices->at(choice).first);
+                                infoWins.Add(new Window(std::make_shared<DeviceInfo>(devices->at(choice)), 0, 0, true));
+                            }
+                        }*/
+                        mvprintw(22, 1, "Choice made is : %d", choice);
+                    }
+                }
+            }
+            break;
+        }
+        }
+        std::scoped_lock lck(win);
+        infoWins.PosUpdate();
+        infoWins.Update();
+        menuInfo->UpdateStrData();
+        menuWin.Update();
+        refresh();
+    }
+    endwin();
+    //WaitForSingleObject(mosqThread.native_handle(), INFINITE);
     mosquitto_lib_cleanup();
 
     return 0;

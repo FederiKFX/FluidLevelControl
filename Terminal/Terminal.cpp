@@ -19,16 +19,22 @@ void initialize()
 }
 
 void on_connect(struct mosquitto* mosq, void* obj, int rc) {
-    //printf("ID: %d\n", *(int*)obj);
-    //std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
-    if (rc) {
-        //printf("Error with result code: %d\n", rc);
-        exit(-1);
+    if (rc == MOSQ_ERR_SUCCESS)
+    {
+        mosquitto_subscribe(mosq, NULL, "Status/#", 0);
     }
-    mosquitto_subscribe(mosq, NULL, "Status/#", 0);
-    mosquitto_subscribe(mosq, NULL, "Setup/#", 0);
-    mosquitto_subscribe(mosq, NULL, "Init", 0);
 }
+
+class DevEqu {
+    std::shared_ptr<Device> m_dev;
+
+public:
+    DevEqu(std::shared_ptr<Device> dev) :m_dev(dev) {}
+    bool operator()(std::shared_ptr<Device> dev) const
+    {
+        return m_dev->id == dev->id;
+    }
+};
 
 void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
 
@@ -38,26 +44,18 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
     }
 
     int count;
-    //printf("New message from %s: %s\n", msg->topic, (char*)msg->payload);
     if (mosquitto_sub_topic_tokenise(msg->topic, &topics, &count) == MOSQ_ERR_SUCCESS)
     {
-        //printf("New message from %s: %s\n", msg->topic, (char*)msg->payload);
         if (std::string(topics[0]) == "Status")
         {
-            //std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
-            //std::cout << (nlohmann::json::parse((char*)msg->payload)).dump();
-        }
-        if (std::string(topics[0]) == "Setup")
-        {
-            //std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
-            //printf("New config to %s: %s\n", topics[1], (char*)msg->payload);
-        }
-        if (std::string(topics[0]) == "Init")
-        {
-            //std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
+            std::vector<std::shared_ptr<Device>>* devices = static_cast<std::vector<std::shared_ptr<Device>>*>(obj);
+
             nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
-            static_cast<std::vector<std::shared_ptr<Device>>*>(obj)->push_back(std::make_shared<Device>(j.get<Device>()));
-            //printf("New config to %s: %s\n", topics[1], (char*)msg->payload);
+            std::shared_ptr<Device> dev = std::make_shared<Device>(j.get<Device>());
+
+            auto it = std::find_if(devices->begin(), devices->end(), DevEqu(dev));
+            if (it == devices->end())
+                devices->push_back(dev);
         }
     }
 }
@@ -71,7 +69,7 @@ int main()
 
     std::thread mosqThread([&] {
         struct mosquitto* mosq;
-        mosq = mosquitto_new(NULL, true, devices.get());
+        mosq = mosquitto_new("Terminal", true, devices.get());
 
         mosquitto_connect_callback_set(mosq, on_connect);
         mosquitto_message_callback_set(mosq, on_message);
@@ -145,7 +143,7 @@ int main()
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
                     int choice = choice = menuWin.ClickAction(event.y, event.x);
-                    infoWins.ClickAction(event.y, event.x);
+                    bool is = infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
                         if (choice == choices->size() - 1)
