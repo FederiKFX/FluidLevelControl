@@ -13,6 +13,11 @@ void WindowsGrid::Add(Window* win)
     CalcPos();
 }
 
+void WindowsGrid::Del(int i)
+{
+    m_Windows.erase(m_Windows.begin() + i);
+}
+
 void WindowsGrid::Update()
 {
     for (size_t i = 0; i < m_Windows.size(); ++i)

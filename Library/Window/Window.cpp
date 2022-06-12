@@ -22,7 +22,10 @@ void Window::Update()
 {
     if (m_boxEn)
         wborder(m_window, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
-
+    delwin(m_window);
+    //if (m_boxEn)
+       // wborder(m_window, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+    m_window = newwin(m_height, m_width, m_y, m_x);
     TextUpdate();
     SizeUpdate();
 
@@ -105,7 +108,7 @@ void Window::TextUpdate()
     if (!m_data->empty())
     {
         int y = 0, x = 0;
-        int maxWidth = 0;
+        int maxWidth = (*m_data)[0].str.size();
         m_height = 2 * m_textY;
         m_width = 2 * m_textX;
         for (auto& el : *m_data)
@@ -123,6 +126,7 @@ void Window::TextUpdate()
             x += el.str.size();
             PaintOff(el.colour, el.highlight);
         }
+        maxWidth < x ? maxWidth = x : NULL;
         m_height += ++y;
         m_width += maxWidth;
     }
