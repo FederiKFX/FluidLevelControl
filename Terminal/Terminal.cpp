@@ -55,7 +55,13 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
 
             auto it = std::find_if(devices->begin(), devices->end(), DevEqu(dev));
             if (it == devices->end())
+            {
                 devices->push_back(dev);
+            }
+            else
+            {
+                *it = dev;
+            }
         }
     }
 }

@@ -124,7 +124,6 @@ int main()
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
 
     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
-    Window menuWin(menuInfo, 10, 5, true);
 
 
     //int res = WaitForSingleObject(thr1.native_handle(), INFINITE);
@@ -148,7 +147,7 @@ int main()
                 infoWins.PosUpdate();
                 infoWins.Update();
                 menuInfo->UpdateStrData();
-                menuWin.Update();
+                menuInfo->m_window->Update();
                 refresh();
             }
             }).detach();
@@ -160,7 +159,7 @@ int main()
         {
             std::scoped_lock lck(win);
             resize_term(0, 0);
-            menuWin.PosUpdate();
+            menuInfo->m_window->PosUpdate();
             infoWins.PosUpdate();
             break;
         }
@@ -170,7 +169,7 @@ int main()
             {
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
-                    int choice = choice = menuWin.ClickAction(event.y, event.x);
+                    int choice = menuInfo->ClickAction(event.y, event.x);
                     bool is = infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
@@ -181,9 +180,10 @@ int main()
                         if (choice == 0)
                         {
                             std::shared_ptr<Device> dev = std::make_shared<Device>();
+                            //dev->name = L"    ";
                             dev->id = devices.size() + 5;
                             devices.push_back(dev);
-                            infoWins.Add(new Window(std::make_shared<DeviceInfo>(dev), 0, 0, true));
+                            infoWins.Add(std::make_shared<DeviceInfo>(dev));
                             std::thread(DeviceSimulation, dev).detach();
                         }
                         /*else if (choice < devices->size())
@@ -212,7 +212,7 @@ int main()
         infoWins.PosUpdate();
         infoWins.Update();
         menuInfo->UpdateStrData();
-        menuWin.Update();
+        menuInfo->m_window->Update();
         refresh();
     }
     endwin();

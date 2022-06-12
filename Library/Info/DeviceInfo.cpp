@@ -47,6 +47,7 @@ void DeviceInfo::UpdateStrData()
 
     m_data->push_back(StrData(L"Датчики:", line++));
 
+    m_sensorStrID.clear();
     for (size_t i = m_device->sensors.size() - 1; i != -1; i--)
     {
         m_data->push_back(StrData(L"Датчик " + std::to_wstring(i) + L": ", line));
@@ -61,16 +62,39 @@ void DeviceInfo::UpdateStrData()
 int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
 {
     int i = m_window->ClickedAt(mouse_y, mouse_x);
-    if (i == 1)
+    if (i != -1)
     {
-        m_device->name = m_window->GetWstr(i);
-    }
-    auto pos = std::find(m_sensorStrID.begin(), m_sensorStrID.end(), i) - m_sensorStrID.begin();
-    if (pos < m_sensorStrID.size()) {
-        m_device->sensors[m_device->sensors.size() - 1 - pos] = !m_device->sensors[m_device->sensors.size() - 1 - pos];
+        if (i == 0)
+        {
+            m_device->name = m_window->GetWstr(1);
+        }
+        if (i == 2)
+        {
+            m_device->fluidType = static_cast<Colour>(std::stoi(m_window->GetWstr(3)));
+        }
+        if (i == 6)
+        {
+            m_device->sensors.push_back(false);
+        }
+        auto pos = std::find(m_sensorStrID.begin(), m_sensorStrID.end(), i) - m_sensorStrID.begin();
+        if (pos < m_sensorStrID.size()) {
+            m_device->sensors[m_device->sensors.size() - 1 - pos] = !m_device->sensors[m_device->sensors.size() - 1 - pos];
+        }
+        int numOfOn = 0;
+        for (auto sensor : m_device->sensors)
+        {
+            if (sensor)
+            {
+                numOfOn++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        m_device->fullness = (float)numOfOn / m_device->sensors.size() * 100;
         UpdateStrData();
     }
-    
     return i;
 }
 
