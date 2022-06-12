@@ -44,7 +44,7 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
 void DeviceSimulation(std::shared_ptr<Device> device)
 {
     struct mosquitto* mosq;
-    mosq = mosquitto_new(NULL, true, device.get());
+    mosq = mosquitto_new(std::to_string(device->id).data(), true, device.get());
 
     mosquitto_connect_callback_set(mosq, on_connect);
     mosquitto_message_callback_set(mosq, on_message);
@@ -56,14 +56,16 @@ void DeviceSimulation(std::shared_ptr<Device> device)
         mosquitto_loop_start(mosq);
         Sleep(500);
 
-        mosquitto_publish(mosq, NULL, ("Setup/" + toUtf8(device->name)).data(), msg1.size(), msg1.c_str(), 0, false);
+        mosquitto_publish(mosq, NULL, ("Setup/Dev" + std::to_string(device->id)).data(), msg1.size(), msg1.c_str(), 0, false);
 
         nlohmann::json j = *(device.get());
 
         std::string msg = j.dump();
+        mosquitto_publish(mosq, NULL, "Init", msg.size(), msg.c_str(), 0, false);
+        std::cout << msg << std::endl;
         while (true)
         {
-            mosquitto_publish(mosq, NULL, ("Status/" + toUtf8(device->name)).data(), msg.size(), msg.c_str(), 0, false);
+            mosquitto_publish(mosq, NULL, ("Status/Dev" + std::to_string(device->id)).data(), msg.size(), msg.c_str(), 0, false);
             Sleep(10000);
         }
         mosquitto_loop_stop(mosq, true);
@@ -106,10 +108,14 @@ int main()
     devices.push_back(std::make_shared<Device>());
     devices.push_back(std::make_shared<Device>());
     devices[0]->sensors = { 1,1,1,1,1,0,0,0 };
-    devices[0]->name = L"Dev0";
+    devices[0]->id = 54;
+    devices[0]->name = L"Dev0Тесті";
+    devices[0]->fluidType = Colour::GASOLINE;
 
     devices[1]->sensors = { 1,1,1,1,0,0 };
+    devices[0]->id = 18;
     devices[1]->name = L"Dev1";
+    devices[1]->fluidType = Colour::WATER;
 
     for (auto dev : devices)
     {
@@ -136,7 +142,7 @@ int main()
     //int res = WaitForSingleObject(thr1.native_handle(), INFINITE);
     thr1.detach();
     Sleep(1000);
-    devices[0]->name = L"Dev010";
+    //devices[0]->name = L"Dev010";
     thr2.join();
 
 
