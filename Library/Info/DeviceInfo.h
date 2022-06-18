@@ -5,7 +5,7 @@ struct Device
 {
     uint64_t id;
     std::wstring name;
-    Colour fluidType;
+    FluidType fluidType;
     uint32_t fullness;
     std::vector<bool> sensors;
     std::vector<bool> pins; 

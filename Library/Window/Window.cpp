@@ -2,7 +2,6 @@
 
 Window::Window(std::shared_ptr<std::vector<StrData>> data, int y, int x, bool boxEn, int height, int width) : m_data(data), m_height(height), m_width(width), m_y(y), m_x(x), m_boxEn(boxEn)
 {
-    //m_data = m_winInfo->m_data;
     m_window = newwin(m_height, m_width, m_y, m_x);
     TextUpdate();
     SizeUpdate();
@@ -34,11 +33,6 @@ void Window::Update()
 
     wrefresh(m_window);
 }
-
-/*int Window::ClickAction(int mouse_y, int mouse_x)
-{
-    return m_winInfo->ClickAction(ClickedAt(mouse_y, mouse_x));
-}*/
 
 int Window::GetHeight()
 {
@@ -89,14 +83,14 @@ std::wstring Window::GetWstr(int i)
     return GetWSTR((*m_data)[i].y, (*m_data)[i].x, 0);
 }
 
-void Window::PaintOn(Colour color, bool highlight)
+void Window::PaintOn(FluidType color, bool highlight)
 {
     wattron(m_window, COLOR_PAIR(color));
     if(highlight)
         wattron(m_window, A_REVERSE);
 }
 
-void Window::PaintOff(Colour color, bool highlight)
+void Window::PaintOff(FluidType color, bool highlight)
 {
     wattroff(m_window, COLOR_PAIR(color));
     if (highlight)

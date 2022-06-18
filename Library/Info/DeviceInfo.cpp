@@ -39,9 +39,13 @@ DeviceInfo::DeviceInfo(std::shared_ptr<Device> device) : m_device(device)
     m_data = std::make_shared<std::vector<StrData>>();
     UpdateStrData();
     m_window = std::make_shared<Window>(m_data, 0, 0, true);
-    init_pair(Colour::WATER, COLOR_BLUE, COLOR_BLUE);
-    init_pair(Colour::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
-    init_pair(Colour::TANK, COLOR_WHITE, COLOR_WHITE);
+    init_pair(FluidType::WATER, COLOR_BLUE, COLOR_BLUE);
+    init_pair(FluidType::GASOLINE, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(FluidType::OIL, COLOR_RED, COLOR_RED);
+    init_pair(FluidType::MILK, COLOR_CYAN, COLOR_CYAN);
+    init_pair(FluidType::CHEMICALS, COLOR_GREEN, COLOR_GREEN);
+    init_pair(FluidType::OTHER, COLOR_MAGENTA, COLOR_MAGENTA);
+    init_pair(FluidType::TANK, COLOR_WHITE, COLOR_WHITE);
 }
 
 void DeviceInfo::UpdateStrData()
@@ -63,7 +67,7 @@ void DeviceInfo::UpdateStrData()
     for (size_t i = m_device->sensors.size() - 1; i != -1; i--)
     {
         m_data->push_back(StrData(L"Датчик " + std::to_wstring(i) + L": ", line));
-        Colour col = Colour::TANK;
+        FluidType col = FluidType::TANK;
         if (m_device->sensors[i])
             col = m_device->fluidType;
         m_sensorStrID.push_back(m_data->size());
@@ -82,7 +86,7 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
         }
         if (i == 2)
         {
-            m_device->fluidType = static_cast<Colour>(std::stoi(m_window->GetWstr(3)));
+            m_device->fluidType = static_cast<FluidType>(std::stoi(m_window->GetWstr(3)));
         }
         if (i == 6)
         {
@@ -119,6 +123,18 @@ std::wstring DeviceInfo::getFluidName()
         break;
     case GASOLINE:
         return L"Бензина";
+        break;
+    case OIL:
+        return L"Нафта";
+        break;
+    case MILK:
+        return L"Молоко";
+        break;
+    case CHEMICALS:
+        return L"Хімікати";
+        break;
+    case OTHER:
+        return L"Інше";
         break;
     default:
         return L"Невідома";

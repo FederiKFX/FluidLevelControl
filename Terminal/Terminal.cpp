@@ -84,7 +84,7 @@ int main()
         {
             mosquitto_loop_start(mosq);
             Sleep(500);
-            devices->push_back(std::make_shared<Device>(Device(63, L"Test", Colour::WATER, 60, { 1,1,1,1,0,0 }, { 0,1 })));
+            devices->push_back(std::make_shared<Device>(Device(63, L"Test", FluidType::WATER, 60, { 1,1,1,1,0,0 }, { 0,1 })));
             while (active) {}
             mosquitto_loop_stop(mosq, true);
         }
@@ -113,7 +113,7 @@ int main()
     {    
         std::thread([&] {
             while (active) {
-                Sleep(800);
+                Sleep(1000);
                 std::scoped_lock lck(win);
                 choices->clear();
                 for (auto dev : *devices)
@@ -148,7 +148,6 @@ int main()
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
                     int choice = menuInfo->ClickAction(event.y, event.x);
-                    //bool is = infoWins.ClickAction(event.y, event.x);
                     if (choice != -1)
                     {
                         if (choice == choices->size() - 1)

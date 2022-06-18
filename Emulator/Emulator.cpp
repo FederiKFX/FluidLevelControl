@@ -85,12 +85,12 @@ int main()
     devices[0]->sensors = { 1,1,1,1,1,0,0,0 };
     devices[0]->id = 54;
     devices[0]->name = L"Dev0Тесті";
-    devices[0]->fluidType = Colour::GASOLINE;
+    devices[0]->fluidType = FluidType::GASOLINE;
 
     devices[1]->sensors = { 1,1,1,1,0,0 };
     devices[1]->id = 18;
     devices[1]->name = L"Dev1";
-    devices[1]->fluidType = Colour::WATER;
+    devices[1]->fluidType = FluidType::WATER;
 
     for (auto dev : devices)
     {

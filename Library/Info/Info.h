@@ -2,9 +2,6 @@
 #include "includes.h"
 #include "Window/Window.h"
 
-
-//class Window;
-
 class Info
 {
 public:
