@@ -80,7 +80,7 @@ int main()
         mosquitto_connect_callback_set(mosq, on_connect);
         mosquitto_message_callback_set(mosq, on_message);
 
-        if (mosquitto_connect(mosq, "localhost", 1883, 10) == MOSQ_ERR_SUCCESS)
+        if (mosquitto_connect(mosq, "192.168.1.127", 1883, 10) == MOSQ_ERR_SUCCESS)
         {
             mosquitto_loop_start(mosq);
             Sleep(500);
