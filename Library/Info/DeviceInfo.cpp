@@ -2,12 +2,24 @@
 
 void from_json(const nlohmann::json& j, Device& d)
 {
-    j.at("id").get_to(d.id);
-    j.at("name").get_to(d.name);
-    j.at("fluidType").get_to(d.fluidType);
-    j.at("fullness").get_to(d.fullness);
-    j.at("sensors").get_to(d.sensors);
-    j.at("pins").get_to(d.pins);
+    if (j.contains("id"))
+        j.at("id").get_to(d.id);
+    if (j.contains("name"))
+    {
+        j.at("name").get_to(d.name);
+    }
+    else
+    {
+        d.name = L"NoName";
+    }
+    if (j.contains("fluidType"))
+        j.at("fluidType").get_to(d.fluidType);
+    if (j.contains("fullness"))
+        j.at("fullness").get_to(d.fullness);
+    if (j.contains("sensors"))
+        j.at("sensors").get_to(d.sensors);
+    if (j.contains("pins"))
+        j.at("pins").get_to(d.pins);
 }
 
 void to_json(nlohmann::json& j, const Device& d)
