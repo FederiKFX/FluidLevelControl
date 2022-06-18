@@ -1,11 +1,11 @@
 #include "MenuInfo.h"
 
-MenuInfo::MenuInfo(std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices) : m_choices(choices)
+MenuInfo::MenuInfo(int y, int x, std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices) : m_choices(choices)
 {
     init_pair(FluidType::DEFAULT, COLOR_WHITE, COLOR_BLACK);
     m_data = std::make_shared<std::vector<StrData>>();
     UpdateStrData();
-    m_window = std::make_shared<Window>(m_data, 10, 5, true);
+    m_window = std::make_shared<Window>(m_data, y, x, true);
 }
 
 void MenuInfo::AddChoice(std::pair<uint64_t, std::wstring> choice)

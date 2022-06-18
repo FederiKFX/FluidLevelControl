@@ -30,5 +30,6 @@ private:
 
 private:
     std::vector<int> m_sensorStrID;
+    std::vector<int> m_pinStrID;
 };
 

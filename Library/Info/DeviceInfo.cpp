@@ -58,7 +58,7 @@ void DeviceInfo::UpdateStrData()
     m_data->push_back(StrData(L"Тип рідини: ", line));
     m_data->push_back(StrData(getFluidName(), line++));
 
-    m_data->push_back(StrData(L"Заповненість: ", line));
+    m_data->push_back(StrData(L"Наповненість: ", line));
     m_data->push_back(StrData(std::to_wstring(m_device->fullness) + L"%", line++));
 
     m_data->push_back(StrData(L"Датчики:", line++));
@@ -73,6 +73,19 @@ void DeviceInfo::UpdateStrData()
         m_sensorStrID.push_back(m_data->size());
         m_data->push_back(StrData(L"000000", line++, 0, col));
     } 
+
+    m_data->push_back(StrData(L"Виходи:", line++));
+
+    m_pinStrID.clear();
+    for (size_t i = m_device->pins.size() - 1; i != -1; i--)
+    {
+        m_data->push_back(StrData(L"Вихід " + std::to_wstring(i) + L": ", line));
+        FluidType col = FluidType::OIL;
+        if (m_device->pins[i])
+            col = FluidType::CHEMICALS;
+        m_pinStrID.push_back(m_data->size());
+        m_data->push_back(StrData(L"000", line++, 0, col));
+    }
 }
 
 int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
@@ -92,6 +105,10 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
         {
             m_device->sensors.push_back(false);
         }
+        if (i == 7 + m_device->sensors.size() * 2)
+        {
+            m_device->pins.push_back(false);
+        }
         auto pos = std::find(m_sensorStrID.begin(), m_sensorStrID.end(), i) - m_sensorStrID.begin();
         if (pos < m_sensorStrID.size()) {
             m_device->sensors[m_device->sensors.size() - 1 - pos] = !m_device->sensors[m_device->sensors.size() - 1 - pos];
@@ -109,6 +126,11 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
             }
         }
         m_device->fullness = (float)numOfOn / m_device->sensors.size() * 100;
+
+        auto posP = std::find(m_pinStrID.begin(), m_pinStrID.end(), i) - m_pinStrID.begin();
+        if (posP < m_pinStrID.size()) {
+            m_device->pins[m_device->pins.size() - 1 - posP] = !m_device->pins[m_device->pins.size() - 1 - posP];
+        }
         UpdateStrData();
     }
     return i;

@@ -68,6 +68,7 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
 
 int main()
 {
+    SetConsoleTitle(L"Terminal");
     bool active = true;
     std::shared_ptr<std::vector<std::shared_ptr<Device>>> devices = std::make_shared<std::vector<std::shared_ptr<Device>>>();
 
@@ -80,11 +81,11 @@ int main()
         mosquitto_connect_callback_set(mosq, on_connect);
         mosquitto_message_callback_set(mosq, on_message);
 
-        if (mosquitto_connect(mosq, "192.168.1.127", 1883, 10) == MOSQ_ERR_SUCCESS)
+        if (mosquitto_connect(mosq, "192.168.1.128", 1883, 10) == MOSQ_ERR_SUCCESS)
         {
             mosquitto_loop_start(mosq);
             Sleep(500);
-            devices->push_back(std::make_shared<Device>(Device(63, L"Test", FluidType::WATER, 60, { 1,1,1,1,0,0 }, { 0,1 })));
+            //devices->push_back(std::make_shared<Device>(Device(63, L"Test", FluidType::WATER, 60, { 1,1,1,1,0,0 }, { 0,1 })));
             while (active) {}
             mosquitto_loop_stop(mosq, true);
         }
@@ -99,10 +100,14 @@ int main()
     WindowsGrid infoWins(0, 30);
 
     std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
+    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Змінити інформацію"));
+    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Змінити налаштування"));
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
+    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(0, 4, choices);
 
-    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
-
+    std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> devisesChoice = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
+    devisesChoice->push_back(std::make_pair<uint64_t, std::wstring>(0, L"     "));
+    std::shared_ptr<MenuInfo> deviceList = std::make_shared<MenuInfo>(10, 4, devisesChoice);
 
     int ch;
     MEVENT event;
@@ -115,15 +120,16 @@ int main()
             while (active) {
                 Sleep(1000);
                 std::scoped_lock lck(win);
-                choices->clear();
+                devisesChoice->clear();
                 for (auto dev : *devices)
                 {
                     int numOfOn = 0;
-                    choices->push_back(std::pair<uint64_t, std::wstring>(dev->id, dev->name));
+                    devisesChoice->push_back(std::pair<uint64_t, std::wstring>(dev->id, dev->name));
                 }
-                choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
                 infoWins.PosUpdate();
                 infoWins.Update();
+                deviceList->UpdateStrData();
+                deviceList->m_window->Update();
                 menuInfo->UpdateStrData();
                 menuInfo->m_window->Update();
                 refresh();
@@ -137,6 +143,7 @@ int main()
         {
             std::scoped_lock lck(win);
             resize_term(0, 0);
+            deviceList->m_window->PosUpdate();
             menuInfo->m_window->PosUpdate();
             infoWins.PosUpdate();
             break;
@@ -154,9 +161,13 @@ int main()
                         {
                             active = false;
                         }
-                        else if (choice < devices->size())
+                    }
+                    choice = deviceList->ClickAction(event.y, event.x);
+                    if (choice != -1)
+                    {
+                        if (choice < devices->size())
                         {
-                            auto it = std::find(activWins.begin(), activWins.end(), choices->at(choice).first);
+                            auto it = std::find(activWins.begin(), activWins.end(), devisesChoice->at(choice).first);
                             if (it != activWins.end())
                             {
                                 infoWins.Del(it - activWins.begin());
@@ -165,11 +176,10 @@ int main()
                             }
                             else
                             {
-                                activWins.push_back(choices->at(choice).first);
+                                activWins.push_back(devisesChoice->at(choice).first);
                                 infoWins.Add(std::make_shared<DeviceInfo>(devices->at(choice)));
                             }
                         }
-                        mvprintw(22, 1, "Choice made is : %d", choice);
                     }
                 }
             }
@@ -179,6 +189,8 @@ int main()
         std::scoped_lock lck(win);
         infoWins.PosUpdate();
         infoWins.Update();
+        deviceList->UpdateStrData();
+        deviceList->m_window->Update();
         menuInfo->UpdateStrData();
         menuInfo->m_window->Update();
         refresh();

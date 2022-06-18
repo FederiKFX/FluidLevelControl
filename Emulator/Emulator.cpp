@@ -59,7 +59,7 @@ void DeviceSimulation(std::shared_ptr<Device> device)
     mosquitto_connect_callback_set(mosq, on_connect);
     mosquitto_message_callback_set(mosq, on_message);
 
-    if (mosquitto_connect(mosq, "192.168.1.127", 1883, 10) == MOSQ_ERR_SUCCESS)
+    if (mosquitto_connect(mosq, "192.168.1.128", 1883, 10) == MOSQ_ERR_SUCCESS)
     {
         while (true)
         {
@@ -80,40 +80,8 @@ int main()
     bool active = true;
 
     std::vector<std::shared_ptr<Device>> devices;
-    devices.push_back(std::make_shared<Device>());
-    devices.push_back(std::make_shared<Device>());
-    devices[0]->sensors = { 1,1,1,1,1,0,0,0 };
-    devices[0]->id = 54;
-    devices[0]->name = L"Dev0Тесті";
-    devices[0]->fluidType = FluidType::GASOLINE;
-
-    devices[1]->sensors = { 1,1,1,1,0,0 };
-    devices[1]->id = 18;
-    devices[1]->name = L"Dev1";
-    devices[1]->fluidType = FluidType::WATER;
-
-    for (auto dev : devices)
-    {
-        int numOfOn = 0;
-        for (auto sensor : dev->sensors)
-        {
-            if (sensor)
-            {
-                numOfOn++;
-            }
-            else
-            {
-                break;
-            }
-        }
-        dev->fullness = (float)numOfOn / dev->sensors.size() * 100;
-    }
 
     mosquitto_lib_init();
-
-    //std::thread thr1(DeviceSimulation, devices[0]);
-    //std::thread thr2(DeviceSimulation, devices[1]);
-
 
     initialize();
     WindowsGrid infoWins(0, 30);
@@ -123,7 +91,7 @@ int main()
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Видалити пристрій"));
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
 
-    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(choices);
+    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(10, 5, choices);
 
 
     //int res = WaitForSingleObject(thr1.native_handle(), INFINITE);
@@ -180,7 +148,6 @@ int main()
                         if (choice == 0)
                         {
                             std::shared_ptr<Device> dev = std::make_shared<Device>();
-                            //dev->name = L"    ";
                             dev->id = devices.size() + 5;
                             devices.push_back(dev);
                             infoWins.Add(std::make_shared<DeviceInfo>(dev));
