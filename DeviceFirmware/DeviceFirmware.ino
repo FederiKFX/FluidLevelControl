@@ -1,8 +1,3 @@
-/*********
-  Rui Santos
-  Complete project details at https://randomnerdtutorials.com  
-*********/
-
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoComponents.h>
@@ -10,12 +5,9 @@
 
 using namespace components;
 
-// Replace the next variables with your SSID/Password combination
-const char* ssid = "lifecell";
-const char* password = "159632487";
+const char* ssid = "Yatskiv";
+const char* password = "password9632";
 
-// Add your MQTT Broker IP address, example:
-//const char* mqtt_server = "192.168.1.144";
 const char* mqtt_server = "192.168.1.127";
 
 WiFiClient espClient;
@@ -117,17 +109,6 @@ void reconnect() {
   }
 }
 
-/*bool convertToJson(bool* const& src, JsonVariant dst) {
-  Vector<bool> vec();
-  bool temp[src.size()];
-  for(int i = 0; i < src.size(); ++i)
-  {
-    temp[i]=vec.get(i);
-  }
-  return dst.set(temp);
-}*/
-
-
 void loop() {
   if (!client.connected()) {
     reconnect();
@@ -135,7 +116,6 @@ void loop() {
   client.loop();
 
   dev.fluidType = 11;
-  dev.fullness = 0;
 
   long now = millis();
   if (now - lastMsg > 5000) {
@@ -176,10 +156,8 @@ void loop() {
     size_t size = measureJson(json) + 5;
     char* tempString = new char[size];
     serializeJson(json, tempString, size);
-    Serial.println(tempString);
     client.publish("Status/Dev50", tempString);
 
     delete tempString;
   }
-  //delay(2000);
 }
