@@ -120,7 +120,7 @@ void Window::TextUpdate()
             x += el.str.size();
             PaintOff(el.colour, el.highlight);
         }
-        maxWidth < x ? maxWidth = x : NULL;
+        //maxWidth < x ? maxWidth = x : NULL;
         m_height += ++y;
         m_width += maxWidth;
     }

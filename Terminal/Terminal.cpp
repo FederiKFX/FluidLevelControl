@@ -103,11 +103,11 @@ int main()
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Змінити інформацію"));
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Змінити налаштування"));
     choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
-    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(0, 4, choices);
+    std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(0, 0, choices);
 
     std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> devisesChoice = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
     devisesChoice->push_back(std::make_pair<uint64_t, std::wstring>(0, L"     "));
-    std::shared_ptr<MenuInfo> deviceList = std::make_shared<MenuInfo>(10, 4, devisesChoice);
+    std::shared_ptr<MenuInfo> deviceList = std::make_shared<MenuInfo>(10, 0, devisesChoice);
 
     int ch;
     MEVENT event;
@@ -124,6 +124,7 @@ int main()
                 for (auto dev : *devices)
                 {
                     int numOfOn = 0;
+                    dev->name.erase(std::remove(dev->name.begin(), dev->name.end(), '\0'), dev->name.end());
                     devisesChoice->push_back(std::pair<uint64_t, std::wstring>(dev->id, dev->name));
                 }
                 infoWins.PosUpdate();
@@ -155,9 +156,34 @@ int main()
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
                     int choice = menuInfo->ClickAction(event.y, event.x);
+                    menuInfo->UpdateStrData();
+                    menuInfo->m_window->Update();
                     if (choice != -1)
                     {
-                        if (choice == choices->size() - 1)
+                        if (choice == 0)
+                        {
+                            while (true)
+                            {
+                                ch = getch();
+                                if (ch == KEY_MOUSE)
+                                    if (getmouse(&event) == OK)
+                                        if (event.bstate & BUTTON1_CLICKED)
+                                            if (infoWins.ClickAction(event.y, event.x) == -1)
+                                            {
+                                                menuInfo->SetHighlight(choice, 0);
+                                                break;
+                                            }
+                            }
+                        }
+                        else if (choice == 1)
+                        {
+                            clear();
+                            menuInfo->m_window->Update();
+                            deviceList->m_window->Update();
+                            refresh();
+                            Sleep(10000);
+                        }
+                        else if (choice == choices->size() - 1)
                         {
                             active = false;
                         }

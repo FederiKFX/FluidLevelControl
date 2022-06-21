@@ -11,7 +11,7 @@ public:
     void    PosUpdate   ();
     void    SizeUpdate  ();
     void    Update      ();
-    bool    ClickAction (int mouse_y, int mouse_x);
+    int     ClickAction (int mouse_y, int mouse_x);
 
 private:
     void    CalcPos     ();
