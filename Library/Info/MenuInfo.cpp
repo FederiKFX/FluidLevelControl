@@ -24,8 +24,18 @@ void MenuInfo::UpdateStrData()
         {
             m_visible.push_back(false);
         }
-        m_data->push_back(StrData((*m_choices)[i].second, line++, m_visible[i]));
+        std::wstring name = (*m_choices)[i].second;
+        if ((*m_choices)[i].first)
+            name += L": " + std::to_wstring((*m_choices)[i].first);
+
+        m_data->push_back(StrData(name, line++, m_visible[i]));
     }   
+}
+
+void MenuInfo::SetHighlight(int i, bool en)
+{
+    (*m_data)[i].highlight = en;
+    m_visible[i] = en;
 }
 
 int MenuInfo::ClickAction(int mouse_y, int mouse_x)
