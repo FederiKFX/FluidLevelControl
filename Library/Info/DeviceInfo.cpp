@@ -20,6 +20,14 @@ void from_json(const nlohmann::json& j, Device& d)
         j.at("sensors").get_to(d.sensors);
     if (j.contains("pins"))
         j.at("pins").get_to(d.pins);
+    if (j.contains("follow_id"))
+        j.at("follow_id").get_to(d.follow_id);
+    if (j.contains("follow_comparison"))
+        j.at("follow_comparison").get_to(d.follow_comparison);
+    if (j.contains("follow_fullness"))
+        j.at("follow_fullness").get_to(d.follow_fullness);
+    if (j.contains("pins_state"))
+        j.at("pins_state").get_to(d.pins_state);
 }
 
 void to_json(nlohmann::json& j, const Device& d)
@@ -30,7 +38,11 @@ void to_json(nlohmann::json& j, const Device& d)
         { "fluidType", d.fluidType },
         { "fullness", d.fullness },
         { "sensors", d.sensors },
-        { "pins", d.pins }
+        { "pins", d.pins },
+        { "follow_id", d.follow_id },
+        { "follow_comparison", d.follow_comparison },
+        { "follow_fullness", d.follow_fullness },
+        { "pins_state", d.pins_state }
     };
 }
 
@@ -86,6 +98,8 @@ void DeviceInfo::UpdateStrData()
         m_pinStrID.push_back(m_data->size());
         m_data->push_back(StrData(L"000", line++, 0, col));
     }
+
+    m_data->push_back(StrData(L"Налаштування:", line++));
 }
 
 int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
@@ -101,6 +115,7 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
         {
             m_device->fluidType = static_cast<FluidType>(std::stoi(m_window->GetWstr(3)));
         }
+#ifndef Emulator
         if (i == 6)
         {
             m_device->sensors.push_back(false);
@@ -131,6 +146,7 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
         if (posP < m_pinStrID.size()) {
             m_device->pins[m_device->pins.size() - 1 - posP] = !m_device->pins[m_device->pins.size() - 1 - posP];
         }
+#endif // Emulator      
         UpdateStrData();
     }
     return i;

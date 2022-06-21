@@ -1,6 +1,12 @@
 #pragma once
 #include "Info.h"
 
+enum Comparison
+{
+    LESS = 0,
+    GREATE = 1
+};
+
 struct Device 
 {
     uint64_t id;
@@ -8,7 +14,11 @@ struct Device
     FluidType fluidType;
     uint32_t fullness;
     std::vector<bool> sensors;
-    std::vector<bool> pins; 
+    std::vector<bool> pins;
+    uint64_t follow_id;
+    Comparison follow_comparison;
+    uint32_t follow_fullness;
+    std::vector<bool> pins_state;
 };
 
 void from_json(const nlohmann::json& j, Device& d);
