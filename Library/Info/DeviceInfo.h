@@ -25,6 +25,28 @@ void from_json(const nlohmann::json& j, Device& d);
 
 void to_json(nlohmann::json& j, const Device& d);
 
+class DevEqu {
+    std::shared_ptr<Device> m_dev;
+
+public:
+    DevEqu(std::shared_ptr<Device> dev) :m_dev(dev) {}
+    bool operator()(std::shared_ptr<Device> dev) const
+    {
+        return m_dev->id == dev->id;
+    }
+};
+
+class IDEqu {
+    uint64_t m_id;
+
+public:
+    IDEqu(uint64_t id) :m_id(id) {}
+    bool operator()(std::shared_ptr<Device> dev) const
+    {
+        return m_id == dev->id;
+    }
+};
+
 class DeviceInfo : public Info
 {
 public:
