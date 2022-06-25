@@ -62,21 +62,24 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
     {
         if (std::string(topics[0]) == "Status")
         {
-            std::scoped_lock lck(devMut);
-            std::vector<std::shared_ptr<Device>>* devices = static_cast<std::vector<std::shared_ptr<Device>>*>(obj);
-
-            nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
-            std::shared_ptr<Device> dev = std::make_shared<Device>(j.get<Device>());
-
-            auto it = std::find_if(devices->begin(), devices->end(), DevEqu(dev));
-            if (it == devices->end())
+            if (devMut.try_lock())
             {
-                devices->push_back(dev);
-            }
-            else
-            {
-                **it = *dev;
-            }
+                std::vector<std::shared_ptr<Device>>* devices = static_cast<std::vector<std::shared_ptr<Device>>*>(obj);
+
+                nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
+                std::shared_ptr<Device> dev = std::make_shared<Device>(j.get<Device>());
+
+                auto it = std::find_if(devices->begin(), devices->end(), DevEqu(dev));
+                if (it == devices->end())
+                {
+                    devices->push_back(dev);
+                }
+                else
+                {
+                    **it = *dev;
+                }
+                devMut.unlock();
+            } 
         }
     }
 }

@@ -17,7 +17,7 @@ int SetupInfo::ClickAction(int mouse_y, int mouse_x)
             try
             {
                 int num = std::stoi(m_window->GetWstr(3));
-                m_device->follow_id = static_cast<FluidType>(num);
+                m_device->follow_id = num;
             }
             catch (const std::exception&) {}       
         }

@@ -8,7 +8,9 @@ using namespace components;
 const char* ssid = "Yatskiv";
 const char* password = "password9632";
 
-const char* mqtt_server = "192.168.1.127";
+const char* mqtt_server = "192.168.1.128";
+
+
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -17,12 +19,18 @@ char msg[50];
 
 struct Device 
 {
-    uint64_t id;
+    int id;
     Vector<int> name;
     int fluidType;
-    uint32_t fullness;
-    Vector<bool> sensors;
-    Vector<bool> pins; 
+    int fullness;
+    Vector<int> sensors;
+    Vector<bool> pinsState;
+    Vector<int> pinsNum;
+
+    int follow_id;
+    int follow_comparison;
+    int follow_fullness;
+    Vector<bool> pinsStateConf;
 };
 
 Device dev;
@@ -35,10 +43,32 @@ void setup() {
   client.setCallback(callback);
 
   dev.id = 50;
-  dev.sensors.push(1);
-  dev.sensors.push(1);
-  dev.sensors.push(0);
-  dev.sensors.push(1);
+  dev.follow_id = 0;
+  dev.sensors.push(32);
+  dev.sensors.push(33);
+  dev.sensors.push(25);
+  dev.sensors.push(26);
+  dev.sensors.push(27);
+  dev.sensors.push(14);
+  dev.sensors.push(12);
+  dev.sensors.push(13);
+
+  for(size_t i = 0; i < dev.sensors.size(); ++i)
+  {
+    pinMode(dev.sensors.get(i), INPUT_PULLUP );   
+  }
+
+  dev.pinsState.push(0);
+  
+  dev.pinsStateConf.push(0);
+
+  dev.pinsNum.push(18);
+
+  for(size_t i = 0; i < dev.pinsNum.size(); ++i)
+  {
+    pinMode(dev.pinsNum.get(i), OUTPUT);
+    digitalWrite(dev.pinsNum.get(i), dev.pinsState.get(i));   
+  }
 }
 
 void setup_wifi() {
@@ -77,17 +107,63 @@ void callback(char* topic, byte* message, unsigned int length) {
 
   // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
   // Changes the output state according to the message
-  /*if (String(topic) == "esp32/output") {
-    Serial.print("Changing output to ");
-    if(messageTemp == "on"){
-      Serial.println("on");
-      digitalWrite(ledPin, HIGH);
+  DynamicJsonDocument doc(1024);
+  DeserializationError error = deserializeJson(doc, messageTemp);
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+    
+  if (String(topic) == "SetupInfo/Dev" + String(dev.id)) {
+    Serial.println("Changing info");
+    dev.fluidType = doc["fluidType"];
+    dev.name.clear();
+    for(unsigned int i = 0; i < doc["name"].size(); ++i)
+    {
+      dev.name.push(doc["name"][i]);
     }
-    else if(messageTemp == "off"){
-      Serial.println("off");
-      digitalWrite(ledPin, LOW);
+  }
+  if (String(topic) == "Setup/Dev" + String(dev.id)) {
+    Serial.println("Changing setup");
+    dev.follow_id = doc["follow_id"];
+    dev.follow_comparison = doc["follow_comparison"];
+    dev.follow_fullness = doc["follow_fullness"]; 
+    dev.pinsStateConf.clear();
+    for(unsigned int i = 0; i < doc["pins_state"].size(); ++i)
+    {
+      dev.pinsStateConf.push(doc["pins_state"][i]);
     }
-  }*/
+    client.subscribe(("Status/Dev" + String(dev.follow_id)).c_str());
+  }
+  if (String(topic) == "Status/Dev" + String(dev.follow_id)) {
+    Serial.println("Changing pins");
+    bool comp = 0;
+    if (dev.follow_comparison)
+    {
+      comp = doc["fullness"] > dev.follow_fullness;
+    }
+    else
+    {
+      comp = doc["fullness"] < dev.follow_fullness;
+    }
+    if(comp)
+    {
+      for(unsigned int i = 0; i < dev.pinsStateConf.size(); ++i)
+      {
+        dev.pinsState.get(i) = dev.pinsStateConf.get(i);
+        digitalWrite(dev.pinsNum.get(i), dev.pinsState.get(i));
+      }
+    }
+    else
+    {
+      for(unsigned int i = 0; i < dev.pinsState.size(); ++i)
+      {
+        dev.pinsState.get(i) = 0;
+        digitalWrite(dev.pinsNum.get(i), dev.pinsState.get(i));
+      }
+    }
+  }
 }
 
 void reconnect() {
@@ -95,10 +171,12 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("Dev50")) {
+    if (client.connect(("Dev" + String(dev.id)).c_str())) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("Setup/#");
+      client.subscribe(("Setup/Dev" + String(dev.id)).c_str());
+      client.subscribe(("SetupInfo/Dev" + String(dev.id)).c_str());
+      client.subscribe(("Status/Dev" + String(dev.follow_id)).c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -114,8 +192,6 @@ void loop() {
     reconnect();
   }
   client.loop();
-
-  dev.fluidType = 11;
 
   long now = millis();
   if (now - lastMsg > 5000) {
@@ -133,7 +209,7 @@ void loop() {
     bool check = true;
     for(unsigned int i = 0; i < dev.sensors.size(); ++i)
     {
-      bool sensor = dev.sensors.get(i);
+      bool sensor = !digitalRead(dev.sensors.get(i));
       json["sensors"][i] = sensor;
       if (sensor && check)
         {
@@ -147,11 +223,18 @@ void loop() {
     dev.fullness = (float)numOfOn / dev.sensors.size() * 100;
     json["fullness"] = dev.fullness;
     
-    for(unsigned int i = 0; i < dev.pins.size(); ++i)
+    for(unsigned int i = 0; i < dev.pinsState.size(); ++i)
     {
-      json["pins"][i] = dev.pins.get(i);
+      json["pins"][i] = dev.pinsState.get(i);
     }
 
+    json["follow_id"] = dev.follow_id;
+    json["follow_comparison"] = dev.follow_comparison;
+    json["follow_fullness"] = dev.follow_fullness;
+    for(unsigned int i = 0; i < dev.pinsStateConf.size(); ++i)
+    {
+      json["pins_state"][i] = dev.pinsStateConf.get(i);
+    }
     
     size_t size = measureJson(json) + 5;
     char* tempString = new char[size];
