@@ -99,7 +99,7 @@ void DeviceInfo::UpdateStrData()
         m_data->push_back(StrData(L"000", line++, 0, col));
     }
 
-    m_data->push_back(StrData(L"Налаштування:", line++));
+    //m_data->push_back(StrData(L"Налаштування:", line++));
 }
 
 int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
@@ -113,7 +113,12 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
         }
         if (i == 2)
         {
-            m_device->fluidType = static_cast<FluidType>(std::stoi(m_window->GetWstr(3)));
+            try
+            {
+                int num = std::stoi(m_window->GetWstr(3));
+                m_device->fluidType = static_cast<FluidType>(num);
+            }
+            catch (const std::exception&) {}
         }
 #ifndef Emulator
         if (i == 6)

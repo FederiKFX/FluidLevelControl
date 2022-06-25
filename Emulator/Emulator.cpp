@@ -150,6 +150,7 @@ int main()
                         {
                             std::shared_ptr<Device> dev = std::make_shared<Device>();
                             dev->id = devices.size() + 5;
+                            dev->pins_state = { 0,1,1,0 };
                             devices.push_back(dev);
                             infoWins.Add(std::make_shared<DeviceInfo>(dev));
                             std::thread(DeviceSimulation, dev).detach();

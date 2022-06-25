@@ -51,3 +51,8 @@ int MenuInfo::ClickAction(int mouse_y, int mouse_x)
     }
     return i;
 }
+
+int MenuInfo::ClickedAt(int mouse_y, int mouse_x)
+{
+    return m_window->ClickedAt(mouse_y, mouse_x);
+}

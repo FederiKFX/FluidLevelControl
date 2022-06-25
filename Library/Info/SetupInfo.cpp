@@ -1,8 +1,51 @@
 #include "SetupInfo.h"
 
+SetupInfo::SetupInfo(int y, int x, std::shared_ptr<Device> device) : m_device(device)
+{
+    m_data = std::make_shared<std::vector<StrData>>();
+    UpdateStrData();
+    m_window = std::make_shared<Window>(m_data, y, x, true);
+}
+
 int SetupInfo::ClickAction(int mouse_y, int mouse_x)
 {
-    return 0;
+    int i = m_window->ClickedAt(mouse_y, mouse_x);
+    if (i != -1)
+    {
+        if (i == 2)
+        {
+            try
+            {
+                int num = std::stoi(m_window->GetWstr(3));
+                m_device->follow_id = static_cast<FluidType>(num);
+            }
+            catch (const std::exception&) {}       
+        }
+        if (i == 4)
+        {
+            try
+            {
+                int num = std::stoi(m_window->GetWstr(5));
+                m_device->follow_comparison = static_cast<Comparison>(num);
+            }
+            catch (const std::exception&) {}
+        }
+        if (i == 6)
+        {
+            try
+            {
+                int num = std::stoi(m_window->GetWstr(7));
+                m_device->follow_fullness = num;
+            }
+            catch (const std::exception&) {}
+        }
+        auto pos = std::find(m_pinStrID.begin(), m_pinStrID.end(), i) - m_pinStrID.begin();
+        if (pos < m_pinStrID.size()) {
+            m_device->pins_state[m_device->pins_state.size() - 1 - pos] = !m_device->pins_state[m_device->pins_state.size() - 1 - pos];
+        } 
+        UpdateStrData();
+    }
+    return i;
 }
 
 void SetupInfo::UpdateStrData()

@@ -1,6 +1,7 @@
 ﻿#include "Window/Window.h"
 #include "Info/MenuInfo.h"
 #include "Info/DeviceInfo.h"
+#include "Info/SetupInfo.h"
 #include "WindowsGrid/WindowsGrid.h"
 
 #include <iostream>
@@ -36,6 +37,19 @@ public:
     }
 };
 
+class IDEqu {
+    uint64_t m_id;
+
+public:
+    IDEqu(uint64_t id) :m_id(id) {}
+    bool operator()(std::shared_ptr<Device> dev) const
+    {
+        return m_id == dev->id;
+    }
+};
+
+std::mutex devMut;
+
 void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
 
     char** topics = new char* [10];
@@ -48,6 +62,7 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
     {
         if (std::string(topics[0]) == "Status")
         {
+            std::scoped_lock lck(devMut);
             std::vector<std::shared_ptr<Device>>* devices = static_cast<std::vector<std::shared_ptr<Device>>*>(obj);
 
             nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
@@ -73,9 +88,9 @@ int main()
     std::shared_ptr<std::vector<std::shared_ptr<Device>>> devices = std::make_shared<std::vector<std::shared_ptr<Device>>>();
 
     mosquitto_lib_init();
+    struct mosquitto* mosq;
 
-    std::thread mosqThread([&] {
-        struct mosquitto* mosq;
+    std::thread mosqThread([&] {        
         mosq = mosquitto_new("Terminal", true, devices.get());
 
         mosquitto_connect_callback_set(mosq, on_connect);
@@ -107,7 +122,7 @@ int main()
 
     std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> devisesChoice = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
     devisesChoice->push_back(std::make_pair<uint64_t, std::wstring>(0, L"     "));
-    std::shared_ptr<MenuInfo> deviceList = std::make_shared<MenuInfo>(10, 0, devisesChoice);
+    std::shared_ptr<MenuInfo> deviceList = std::make_shared<MenuInfo>(17, 0, devisesChoice);
 
     int ch;
     MEVENT event;
@@ -177,11 +192,40 @@ int main()
                         }
                         else if (choice == 1)
                         {
-                            clear();
-                            menuInfo->m_window->Update();
-                            deviceList->m_window->Update();
+                            int dev = -1;
+                            while (dev == -1)
+                            {
+                                ch = getch();
+                                if (ch == KEY_MOUSE)
+                                    if (getmouse(&event) == OK)
+                                        if (event.bstate & BUTTON1_CLICKED)
+                                            dev = deviceList->ClickedAt(event.y, event.x);
+                            }
+                            auto it = std::find_if(devices->begin(), devices->end(), IDEqu((*devices)[dev]->id));
+                            SetupInfo deviceConf(5, 0, *it); 
+                            deviceConf.UpdateStrData();
+                            deviceConf.m_window->Update();
                             refresh();
-                            Sleep(10000);
+                            refresh();
+                            std::scoped_lock lck(devMut);
+                            int cho = -1;
+                            do
+                            {
+                                ch = getch();
+                                if (ch == KEY_MOUSE)
+                                    if (getmouse(&event) == OK)
+                                        if (event.bstate & BUTTON1_CLICKED)
+                                        {
+                                            cho = deviceConf.ClickAction(event.y, event.x);
+                                            deviceConf.m_window->Update();
+                                            refresh();
+                                        }
+                            } while (cho != -1);
+                            clear();
+                            menuInfo->SetHighlight(choice, 0);
+                            nlohmann::json j = *((*it).get());
+                            std::string msg = j.dump();
+                            mosquitto_publish(mosq, NULL, ("Setup/Dev" + std::to_string((*it)->id)).data(), msg.size(), msg.c_str(), 0, false);
                         }
                         else if (choice == choices->size() - 1)
                         {

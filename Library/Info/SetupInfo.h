@@ -4,8 +4,9 @@
 class SetupInfo : public Info
 {
 public:
-    int     ClickAction(int mouse_y, int mouse_x);
-    void    UpdateStrData();
+            SetupInfo       (int y, int x, std::shared_ptr<Device> device);
+    int     ClickAction     (int mouse_y, int mouse_x);
+    void    UpdateStrData   ();
 
 private:
     std::shared_ptr<Device> m_device;
