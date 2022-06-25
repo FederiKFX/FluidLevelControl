@@ -1,6 +1,6 @@
 #pragma once
 #include "includes.h"
-#include "Info/Info.h"
+#include "Info/DeviceInfo.h"
 
 class WindowsGrid
 {
@@ -11,7 +11,7 @@ public:
     void    PosUpdate   ();
     void    SizeUpdate  ();
     void    Update      ();
-    int     ClickAction (int mouse_y, int mouse_x);
+    int     ClickAction (int mouse_y, int mouse_x, OUT uint64_t& devID);
 
 private:
     void    CalcPos     ();

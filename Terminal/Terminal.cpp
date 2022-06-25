@@ -177,18 +177,27 @@ int main()
                     {
                         if (choice == 0)
                         {
+                            std::scoped_lock lck(devMut);
+                            uint64_t devId = -1;
                             while (true)
                             {
+                                infoWins.Update();
                                 ch = getch();
                                 if (ch == KEY_MOUSE)
                                     if (getmouse(&event) == OK)
                                         if (event.bstate & BUTTON1_CLICKED)
-                                            if (infoWins.ClickAction(event.y, event.x) == -1)
-                                            {
-                                                menuInfo->SetHighlight(choice, 0);
+                                            if (infoWins.ClickAction(event.y, event.x, devId) == -1)
                                                 break;
-                                            }
                             }
+                            menuInfo->SetHighlight(choice, 0);
+                            if (devId != -1)
+                            {
+                                auto it = std::find_if(devices->begin(), devices->end(), IDEqu(devId));
+                                nlohmann::json j = *((*it).get());
+                                std::string msg = j.dump();
+                                mosquitto_publish(mosq, NULL, ("SetupInfo/Dev" + std::to_string((*it)->id)).data(), msg.size(), msg.c_str(), 0, false);
+                            }
+                            
                         }
                         else if (choice == 1)
                         {

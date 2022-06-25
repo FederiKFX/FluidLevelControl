@@ -49,14 +49,17 @@ void WindowsGrid::SizeUpdate()
     }
 }
 
-int WindowsGrid::ClickAction(int mouse_y, int mouse_x)
+int WindowsGrid::ClickAction(int mouse_y, int mouse_x, uint64_t& devID)
 {
     int res = -1;
     for (size_t i = 0; i < m_InfoVec.size(); ++i)
     {
         int r = m_InfoVec[i]->ClickAction(mouse_y, mouse_x);
         if (r != -1)
+        {
+            devID = reinterpret_cast<DeviceInfo*>(m_InfoVec[i].get())->m_device->id;
             res = r;
+        }
     }
     return res;
 }
