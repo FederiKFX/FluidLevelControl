@@ -12,10 +12,13 @@ const char* password = "password9632";
 
 const char* mqtt_server = "192.168.1.128";
 
+const int buffSize = 1024;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;
 char msg[50];
+bool newConf = 0;
 
 struct Device 
 {
@@ -23,7 +26,7 @@ struct Device
     Vector<int> name;
     int fluidType;
     int fullness;
-    int error;
+    int erNum;
     Vector<int> sensors;
     Vector<bool> pinsState;
     Vector<int> pinsNum;
@@ -38,15 +41,16 @@ Device dev;
 
 void setup() {
   Serial.begin(115200);
-  EEPROM.begin(1024);
+  EEPROM.begin(buffSize);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+  client.setBufferSize(buffSize);
   
   Serial.println("Reading EEPROM");
  
-  DynamicJsonDocument json(1024);
-  EepromStream eepromStream(0, 1024);
+  DynamicJsonDocument json(buffSize);
+  EepromStream eepromStream(0, buffSize);
   DeserializationError error = deserializeJson(json, eepromStream);
   if (error) {
     Serial.print(F("deserializeJson() failed: "));
@@ -129,7 +133,7 @@ void callback(char* topic, byte* message, unsigned int length) {
 
   // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
   // Changes the output state according to the message
-  DynamicJsonDocument doc(1024);
+  DynamicJsonDocument doc(buffSize);
   DeserializationError error = deserializeJson(doc, messageTemp);
   if (error) {
     Serial.print(F("deserializeJson() failed: "));
@@ -145,6 +149,7 @@ void callback(char* topic, byte* message, unsigned int length) {
     {
       dev.name.push(doc["name"][i]);
     }
+    newConf = 1;
   }
   if (String(topic) == "Setup/Dev" + String(dev.id)) {
     Serial.println("Changing setup");
@@ -157,6 +162,7 @@ void callback(char* topic, byte* message, unsigned int length) {
       dev.pinsStateConf.push(doc["pins_state"][i]);
     }
     client.subscribe(("Status/Dev" + String(dev.follow_id)).c_str());
+    newConf = 1;
   }
   if (String(topic) == "Status/Dev" + String(dev.follow_id)) {
     Serial.println("Changing pins");
@@ -169,7 +175,7 @@ void callback(char* topic, byte* message, unsigned int length) {
     {
       comp = doc["fullness"] < dev.follow_fullness;
     }
-    if(comp)
+    if(comp && !doc["erNum"])
     {
       for(unsigned int i = 0; i < dev.pinsStateConf.size(); ++i)
       {
@@ -218,8 +224,8 @@ void loop() {
   long now = millis();
   if (now - lastMsg > 5000) {
     lastMsg = now;
-
-    DynamicJsonDocument json(1024);
+    
+    DynamicJsonDocument json(buffSize);
     json["id"] = dev.id;
     for(unsigned int i = 0; i < dev.name.size(); ++i)
     {
@@ -229,13 +235,21 @@ void loop() {
 
     int numOfOn = 0;
     bool check = true;
+    dev.erNum = 0;
     for(unsigned int i = 0; i < dev.sensors.size(); ++i)
     {
       bool sensor = !digitalRead(dev.sensors.get(i));
       json["sensors"][i] = sensor;
-      if (sensor && check)
+      if (sensor)
         {
+          if (check)
+          {
             numOfOn++;
+          }
+          else
+          {
+            dev.erNum = 1;
+          }
         }
         else
         {
@@ -244,7 +258,8 @@ void loop() {
     }
     dev.fullness = (float)numOfOn / dev.sensors.size() * 100;
     json["fullness"] = dev.fullness;
-    
+    json["erNum"] = dev.erNum;
+
     for(unsigned int i = 0; i < dev.pinsState.size(); ++i)
     {
       json["pins"][i] = dev.pinsState.get(i);
@@ -257,17 +272,19 @@ void loop() {
     {
       json["pins_state"][i] = dev.pinsStateConf.get(i);
     }
-    
+
     size_t size = measureJson(json) + 5;
     char* tempString = new char[size];
     serializeJson(json, tempString, size);
-    
-    EepromStream eepromStream(0, 1024);
-    serializeJson(json, eepromStream);
-    eepromStream.flush();
-    
-    client.publish(("Status/Dev" + String(dev.id)).c_str(), tempString);
+    if(newConf)
+    {
+      EepromStream eepromStream(0, buffSize);
+      serializeJson(json, eepromStream);
+      eepromStream.flush();
+      newConf = 0;
+    }
 
+    client.publish(("Status/Dev" + String(dev.id)).c_str(), tempString);
     delete tempString;
   }
 }
