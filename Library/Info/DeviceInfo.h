@@ -15,11 +15,11 @@ struct Device
     uint32_t fullness;
     int erNum;
     std::vector<bool> sensors;
-    std::vector<bool> pins;
+    std::vector<bool> pinsState;
     uint64_t follow_id;
     Comparison follow_comparison;
     uint32_t follow_fullness;
-    std::vector<bool> pins_state;
+    std::vector<bool> pinsStateConf;
 };
 
 void from_json(const nlohmann::json& j, Device& d);

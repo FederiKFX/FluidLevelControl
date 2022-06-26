@@ -41,7 +41,7 @@ int SetupInfo::ClickAction(int mouse_y, int mouse_x)
         }
         auto pos = std::find(m_pinStrID.begin(), m_pinStrID.end(), i) - m_pinStrID.begin();
         if (pos < m_pinStrID.size()) {
-            m_device->pins_state[m_device->pins_state.size() - 1 - pos] = !m_device->pins_state[m_device->pins_state.size() - 1 - pos];
+            m_device->pinsStateConf[m_device->pinsStateConf.size() - 1 - pos] = !m_device->pinsStateConf[m_device->pinsStateConf.size() - 1 - pos];
         } 
         UpdateStrData();
     }
@@ -76,11 +76,11 @@ void SetupInfo::UpdateStrData()
     m_data->push_back(StrData(L"Налаштування виходів:", line++));
 
     m_pinStrID.clear();
-    for (size_t i = m_device->pins_state.size() - 1; i != -1; i--)
+    for (size_t i = m_device->pinsStateConf.size() - 1; i != -1; i--)
     {
         m_data->push_back(StrData(L"Вихід " + std::to_wstring(i) + L": ", line));
         FluidType col = FluidType::OIL;
-        if (m_device->pins_state[i])
+        if (m_device->pinsStateConf[i])
             col = FluidType::CHEMICALS;
         m_pinStrID.push_back(m_data->size());
         m_data->push_back(StrData(L"000", line++, 0, col));

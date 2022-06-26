@@ -1,4 +1,5 @@
-﻿#include "Window/Window.h"
+﻿#define Terminal
+#include "Window/Window.h"
 #include "Info/MenuInfo.h"
 #include "Info/DeviceInfo.h"
 #include "Info/SetupInfo.h"

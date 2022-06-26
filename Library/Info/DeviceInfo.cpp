@@ -21,7 +21,7 @@ void from_json(const nlohmann::json& j, Device& d)
     if (j.contains("sensors"))
         j.at("sensors").get_to(d.sensors);
     if (j.contains("pins"))
-        j.at("pins").get_to(d.pins);
+        j.at("pins").get_to(d.pinsState);
     if (j.contains("follow_id"))
         j.at("follow_id").get_to(d.follow_id);
     if (j.contains("follow_comparison"))
@@ -29,7 +29,7 @@ void from_json(const nlohmann::json& j, Device& d)
     if (j.contains("follow_fullness"))
         j.at("follow_fullness").get_to(d.follow_fullness);
     if (j.contains("pins_state"))
-        j.at("pins_state").get_to(d.pins_state);
+        j.at("pins_state").get_to(d.pinsStateConf);
 }
 
 void to_json(nlohmann::json& j, const Device& d)
@@ -41,11 +41,11 @@ void to_json(nlohmann::json& j, const Device& d)
         { "fullness", d.fullness },
         { "erNum", d.erNum },
         { "sensors", d.sensors },
-        { "pins", d.pins },
+        { "pins", d.pinsState },
         { "follow_id", d.follow_id },
         { "follow_comparison", d.follow_comparison },
         { "follow_fullness", d.follow_fullness },
-        { "pins_state", d.pins_state }
+        { "pins_state", d.pinsStateConf }
     };
 }
 
@@ -92,11 +92,11 @@ void DeviceInfo::UpdateStrData()
     m_data->push_back(StrData(L"Виходи:", line++));
 
     m_pinStrID.clear();
-    for (size_t i = m_device->pins.size() - 1; i != -1; i--)
+    for (size_t i = m_device->pinsState.size() - 1; i != -1; i--)
     {
         m_data->push_back(StrData(L"Вихід " + std::to_wstring(i) + L": ", line));
         FluidType col = FluidType::OIL;
-        if (m_device->pins[i])
+        if (m_device->pinsState[i])
             col = FluidType::CHEMICALS;
         m_pinStrID.push_back(m_data->size());
         m_data->push_back(StrData(L"000", line++, 0, col));
@@ -110,6 +110,7 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
     int i = m_window->ClickedAt(mouse_y, mouse_x);
     if (i != -1)
     {
+#ifndef Terminal
         if (i == 0)
         {
             m_device->name = m_window->GetWstr(1);
@@ -123,6 +124,7 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
             }
             catch (const std::exception&) {}
         }
+#endif // Terminal
 #ifndef Emulator
         if (i == 6)
         {
@@ -130,29 +132,39 @@ int DeviceInfo::ClickAction(int mouse_y, int mouse_x)
         }
         if (i == 7 + m_device->sensors.size() * 2)
         {
-            m_device->pins.push_back(false);
+            m_device->pinsState.push_back(false);
+            m_device->pinsStateConf.push_back(false);
         }
         auto pos = std::find(m_sensorStrID.begin(), m_sensorStrID.end(), i) - m_sensorStrID.begin();
         if (pos < m_sensorStrID.size()) {
             m_device->sensors[m_device->sensors.size() - 1 - pos] = !m_device->sensors[m_device->sensors.size() - 1 - pos];
         }
         int numOfOn = 0;
+        bool check = true;
+        m_device->erNum = 0;
         for (auto sensor : m_device->sensors)
         {
             if (sensor)
             {
-                numOfOn++;
+                if (check)
+                {
+                    numOfOn++;
+                }
+                else
+                {
+                    m_device->erNum = 1;
+                }
             }
             else
             {
-                break;
+                check = false;
             }
         }
         m_device->fullness = (float)numOfOn / m_device->sensors.size() * 100;
 
         auto posP = std::find(m_pinStrID.begin(), m_pinStrID.end(), i) - m_pinStrID.begin();
         if (posP < m_pinStrID.size()) {
-            m_device->pins[m_device->pins.size() - 1 - posP] = !m_device->pins[m_device->pins.size() - 1 - posP];
+            m_device->pinsState[m_device->pinsState.size() - 1 - posP] = !m_device->pinsState[m_device->pinsState.size() - 1 - posP];
         }
 #endif // Emulator      
         UpdateStrData();
