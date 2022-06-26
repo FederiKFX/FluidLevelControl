@@ -1,14 +1,15 @@
 #include "MenuInfo.h"
 
-MenuInfo::MenuInfo(int y, int x, std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices) : m_choices(choices)
+MenuInfo::MenuInfo(int y, int x, std::shared_ptr<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>> choices) : m_choices(choices)
 {
     init_pair(FluidType::DEFAULT, COLOR_WHITE, COLOR_BLACK);
+    init_pair(FluidType::ERRORCOL, COLOR_RED, COLOR_BLACK);
     m_data = std::make_shared<std::vector<StrData>>();
     UpdateStrData();
     m_window = std::make_shared<Window>(m_data, y, x, true);
 }
 
-void MenuInfo::AddChoice(std::pair<uint64_t, std::wstring> choice)
+void MenuInfo::AddChoice(std::tuple<uint64_t, std::wstring, FluidType> choice)
 {
     m_choices->push_back(choice);
     UpdateStrData();
@@ -24,11 +25,11 @@ void MenuInfo::UpdateStrData()
         {
             m_visible.push_back(false);
         }
-        std::wstring name = (*m_choices)[i].second;
-        if ((*m_choices)[i].first)
-            name += L": " + std::to_wstring((*m_choices)[i].first);
+        std::wstring name = std::get<1>((*m_choices)[i]);
+        if (std::get<0>((*m_choices)[i]))
+            name += L": " + std::to_wstring(std::get<0>((*m_choices)[i]));
 
-        m_data->push_back(StrData(name, line++, m_visible[i]));
+        m_data->push_back(StrData(name, line++, m_visible[i], std::get<2>((*m_choices)[i])));
     }   
 }
 

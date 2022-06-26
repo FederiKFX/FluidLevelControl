@@ -95,14 +95,14 @@ int main()
     initialize();
     WindowsGrid infoWins(0, 30);
 
-    std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
-    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Змінити інформацію"));
-    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Змінити налаштування"));
-    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
+    std::shared_ptr<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>> choices = std::make_shared<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>>();
+    choices->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"Змінити інформацію", FluidType::DEFAULT));
+    choices->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"Змінити налаштування", FluidType::DEFAULT));
+    choices->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"Вихід", FluidType::DEFAULT));
     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(0, 0, choices);
 
-    std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> devisesChoice = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
-    devisesChoice->push_back(std::make_pair<uint64_t, std::wstring>(0, L"     "));
+    std::shared_ptr<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>> devisesChoice = std::make_shared<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>>();
+    devisesChoice->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"     ", FluidType::DEFAULT));
     std::shared_ptr<MenuInfo> deviceList = std::make_shared<MenuInfo>(17, 0, devisesChoice);
 
     int ch;
@@ -121,7 +121,10 @@ int main()
                 {
                     int numOfOn = 0;
                     dev->name.erase(std::remove(dev->name.begin(), dev->name.end(), '\0'), dev->name.end());
-                    devisesChoice->push_back(std::pair<uint64_t, std::wstring>(dev->id, dev->name));
+                    FluidType col = FluidType::DEFAULT;
+                    if (dev->erNum)
+                        col = FluidType::ERRORCOL;
+                    devisesChoice->push_back(std::make_tuple(dev->id, dev->name, col));
                 }
                 infoWins.PosUpdate();
                 infoWins.Update();
@@ -227,7 +230,7 @@ int main()
                     {
                         if (choice < devices->size())
                         {
-                            auto it = std::find(activWins.begin(), activWins.end(), devisesChoice->at(choice).first);
+                            auto it = std::find(activWins.begin(), activWins.end(), std::get<0>(devisesChoice->at(choice)));
                             if (it != activWins.end())
                             {
                                 infoWins.Del(it - activWins.begin());
@@ -236,7 +239,7 @@ int main()
                             }
                             else
                             {
-                                activWins.push_back(devisesChoice->at(choice).first);
+                                activWins.push_back(std::get<0>(devisesChoice->at(choice)));
                                 infoWins.Add(std::make_shared<DeviceInfo>(devices->at(choice)));
                             }
                         }

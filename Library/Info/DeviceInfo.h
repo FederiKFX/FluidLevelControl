@@ -13,6 +13,7 @@ struct Device
     std::wstring name;
     FluidType fluidType;
     uint32_t fullness;
+    int erNum;
     std::vector<bool> sensors;
     std::vector<bool> pins;
     uint64_t follow_id;

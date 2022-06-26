@@ -11,7 +11,8 @@ enum FluidType
     OIL = 13,
     MILK = 14,
     CHEMICALS = 15,
-    OTHER = 98
+    OTHER = 98,
+    ERRORCOL = 100
 };
 
 struct StrData

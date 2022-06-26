@@ -16,6 +16,8 @@ void from_json(const nlohmann::json& j, Device& d)
         j.at("fluidType").get_to(d.fluidType);
     if (j.contains("fullness"))
         j.at("fullness").get_to(d.fullness);
+    if (j.contains("erNum"))
+        j.at("erNum").get_to(d.erNum);
     if (j.contains("sensors"))
         j.at("sensors").get_to(d.sensors);
     if (j.contains("pins"))
@@ -37,6 +39,7 @@ void to_json(nlohmann::json& j, const Device& d)
         { "name", d.name },
         { "fluidType", d.fluidType },
         { "fullness", d.fullness },
+        { "erNum", d.erNum },
         { "sensors", d.sensors },
         { "pins", d.pins },
         { "follow_id", d.follow_id },
