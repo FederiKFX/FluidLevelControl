@@ -1,7 +1,9 @@
 #include <WiFi.h>
+#include <EEPROM.h>
 #include <PubSubClient.h>
 #include <ArduinoComponents.h>
 #include <ArduinoJson.h>
+#include <StreamUtils.h>
 
 using namespace components;
 
@@ -9,8 +11,6 @@ const char* ssid = "Yatskiv";
 const char* password = "password9632";
 
 const char* mqtt_server = "192.168.1.128";
-
-
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -23,6 +23,7 @@ struct Device
     Vector<int> name;
     int fluidType;
     int fullness;
+    int error;
     Vector<int> sensors;
     Vector<bool> pinsState;
     Vector<int> pinsNum;
@@ -37,13 +38,36 @@ Device dev;
 
 void setup() {
   Serial.begin(115200);
-  
+  EEPROM.begin(1024);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+  
+  Serial.println("Reading EEPROM");
+ 
+  DynamicJsonDocument json(1024);
+  EepromStream eepromStream(0, 1024);
+  DeserializationError error = deserializeJson(json, eepromStream);
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+  serializeJson(json, Serial);
+  dev.fluidType = json["fluidType"];
+  for(unsigned int i = 0; i < json["name"].size(); ++i)
+  {
+    dev.name.push(json["name"][i]);
+  }
+  dev.follow_id = json["follow_id"];
+  dev.follow_comparison = json["follow_comparison"];
+  dev.follow_fullness = json["follow_fullness"]; 
+  for(unsigned int i = 0; i < json["pins_state"].size(); ++i)
+  {
+    dev.pinsStateConf.push(json["pins_state"][i]);
+  }
 
   dev.id = 50;
-  dev.follow_id = 0;
   dev.sensors.push(32);
   dev.sensors.push(33);
   dev.sensors.push(25);
@@ -59,8 +83,6 @@ void setup() {
   }
 
   dev.pinsState.push(0);
-  
-  dev.pinsStateConf.push(0);
 
   dev.pinsNum.push(18);
 
@@ -239,7 +261,12 @@ void loop() {
     size_t size = measureJson(json) + 5;
     char* tempString = new char[size];
     serializeJson(json, tempString, size);
-    client.publish("Status/Dev50", tempString);
+    
+    EepromStream eepromStream(0, 1024);
+    serializeJson(json, eepromStream);
+    eepromStream.flush();
+    
+    client.publish(("Status/Dev" + String(dev.id)).c_str(), tempString);
 
     delete tempString;
   }
