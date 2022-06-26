@@ -21,8 +21,8 @@ void on_connect(struct mosquitto* mosq, void* obj, int rc) {
     if (rc == MOSQ_ERR_SUCCESS)
     {
         uint64_t id = static_cast<Device*>(obj)->id;
-        mosquitto_subscribe(mosq, NULL, "Setup/#", 0);
-        mosquitto_subscribe(mosq, NULL, "SetupInfo/#", 0);
+        mosquitto_subscribe(mosq, NULL, ("Setup/Dev" + std::to_string(id)).c_str(), 0);
+        mosquitto_subscribe(mosq, NULL, ("SetupInfo/Dev" + std::to_string(id)).c_str(), 0);
     }
 }
 
@@ -38,10 +38,10 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
 
     if (mosquitto_sub_topic_tokenise(msg->topic, &topics, &count) == MOSQ_ERR_SUCCESS)
     {
-        if (std::string(topics[1]) == "Setup/Dev" + std::to_string(dev->id))
+        nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
+        Device inDevice = j.get<Device>();
+        if (std::string(topics[1]) == "Dev" + std::to_string(dev->id))
         {
-            nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
-            Device inDevice = j.get<Device>();
 
             if (std::string(topics[0]) == "SetupInfo")
             {
@@ -57,7 +57,10 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
 
                 mosquitto_subscribe(mosq, NULL, ("Status/Dev" + std::to_string(dev->follow_id)).c_str(), 0);
             }
-            else if (std::string(topics[0]) == "Status/Dev" + std::to_string(dev->follow_id))
+        }
+        if (std::string(topics[1]) == "Dev" + std::to_string(dev->follow_id))
+        {
+            if (std::string(topics[0]) == "Status")
             {
                 bool comp = 0;
                 if (dev->follow_comparison)
@@ -94,12 +97,13 @@ void DeviceSimulation(std::shared_ptr<Device> device)
 
     if (mosquitto_connect(mosq, "192.168.1.128", 1883, 10) == MOSQ_ERR_SUCCESS)
     {
+        mosquitto_loop_start(mosq);
         while (true)
         {
             nlohmann::json j = *(device.get());
             std::string msg = j.dump();
             mosquitto_publish(mosq, NULL, ("Status/Dev" + std::to_string(device->id)).data(), msg.size(), msg.c_str(), 0, false);
-            Sleep(10000);
+            Sleep(5000);
         }
         mosquitto_loop_stop(mosq, true);
 
