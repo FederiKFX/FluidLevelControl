@@ -20,8 +20,9 @@ void initialize()
 void on_connect(struct mosquitto* mosq, void* obj, int rc) {
     if (rc == MOSQ_ERR_SUCCESS)
     {
-        //mosquitto_subscribe(mosq, NULL, "Status/#", 0);
+        uint64_t id = static_cast<Device*>(obj)->id;
         mosquitto_subscribe(mosq, NULL, "Setup/#", 0);
+        mosquitto_subscribe(mosq, NULL, "SetupInfo/#", 0);
     }
 }
 
@@ -33,23 +34,54 @@ void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_messag
     }
 
     int count;
+    Device* dev = static_cast<Device*>(obj);
 
-    /*if (mosquitto_sub_topic_tokenise(msg->topic, &topics, &count) == MOSQ_ERR_SUCCESS)
+    if (mosquitto_sub_topic_tokenise(msg->topic, &topics, &count) == MOSQ_ERR_SUCCESS)
     {
-        if (std::string(topics[1]) == toUtf8(static_cast<Device*>(obj)->name))
+        if (std::string(topics[1]) == "Setup/Dev" + std::to_string(dev->id))
         {
-            if (std::string(topics[0]) == "Status")
+            nlohmann::json j = nlohmann::json::parse((char*)msg->payload);
+            Device inDevice = j.get<Device>();
+
+            if (std::string(topics[0]) == "SetupInfo")
             {
-                std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
-                printf("New message from %s: %s\n", topics[1], (char*)msg->payload);
+                dev->fluidType = inDevice.fluidType;
+                dev->name = inDevice.name;
             }
-            if (std::string(topics[0]) == "Setup")
+            else if (std::string(topics[0]) == "Setup")
             {
-                std::cout << toUtf8(static_cast<Device*>(obj)->name) << std::endl;
-                printf("New config to %s: %s\n", topics[1], (char*)msg->payload);
+                dev->follow_id = inDevice.follow_id;
+                dev->follow_comparison = inDevice.follow_comparison;
+                dev->follow_fullness = inDevice.follow_fullness;
+                dev->pinsStateConf = inDevice.pinsStateConf;
+
+                mosquitto_subscribe(mosq, NULL, ("Status/Dev" + std::to_string(dev->follow_id)).c_str(), 0);
+            }
+            else if (std::string(topics[0]) == "Status/Dev" + std::to_string(dev->follow_id))
+            {
+                bool comp = 0;
+                if (dev->follow_comparison)
+                {
+                    comp = inDevice.fullness > dev->follow_fullness;
+                }
+                else
+                {
+                    comp = inDevice.fullness < dev->follow_fullness;
+                }
+                if (comp && !inDevice.erNum)
+                {
+                    dev->pinsState = dev->pinsStateConf;
+                }
+                else
+                {
+                    for (auto pin : dev->pinsState)
+                    {
+                        pin = 0;
+                    }
+                }
             }
         }
-    }*/
+    }
 }
 
 void DeviceSimulation(std::shared_ptr<Device> device)
@@ -87,20 +119,12 @@ int main()
     initialize();
     WindowsGrid infoWins(0, 30);
 
-    std::shared_ptr<std::vector<std::pair<uint64_t, std::wstring>>> choices = std::make_shared<std::vector<std::pair<uint64_t, std::wstring>>>();
-    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Додати пристрій"));
-    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Видалити пристрій"));
-    choices->push_back(std::make_pair<uint64_t, std::wstring>(0, L"Вихід"));
+    std::shared_ptr<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>> choices = std::make_shared<std::vector<std::tuple<uint64_t, std::wstring, FluidType>>>();
+    choices->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"Додати пристрій", FluidType::DEFAULT));
+    choices->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"Видалити пристрій", FluidType::DEFAULT));
+    choices->push_back(std::make_tuple<uint64_t, std::wstring, FluidType>(0, L"Вихід", FluidType::DEFAULT));
 
     std::shared_ptr<MenuInfo> menuInfo = std::make_shared<MenuInfo>(10, 5, choices);
-
-
-    //int res = WaitForSingleObject(thr1.native_handle(), INFINITE);
-    //thr1.detach();
-    //Sleep(1000);
-    //devices[0]->name = L"Dev010";
-    //thr2.detach();
-
 
     int ch;
     MEVENT event;
@@ -139,7 +163,8 @@ int main()
                 if (event.bstate & BUTTON1_CLICKED) {
                     std::scoped_lock lck(win);
                     int choice = menuInfo->ClickAction(event.y, event.x);
-                    bool is = infoWins.ClickAction(event.y, event.x);
+                    uint64_t devId;
+                    bool is = infoWins.ClickAction(event.y, event.x, devId);
                     if (choice != -1)
                     {
                         if (choice == choices->size() - 1)
@@ -150,7 +175,6 @@ int main()
                         {
                             std::shared_ptr<Device> dev = std::make_shared<Device>();
                             dev->id = devices.size() + 5;
-                            dev->pins_state = { 0,1,1,0 };
                             devices.push_back(dev);
                             infoWins.Add(std::make_shared<DeviceInfo>(dev));
                             std::thread(DeviceSimulation, dev).detach();
